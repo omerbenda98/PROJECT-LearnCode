@@ -8,7 +8,8 @@ const {
   GraphQLString,
   GraphQLObjectType,
 } = require("graphql");
-const { LessonType } = require("../types/LessonType"); // Assuming you have a LessonType defined
+const LessonType = require("../types/LessonType");
+const { QuizInputType } = require("../types/inputTypes");
 
 const lessonResolvers = {
   Query: {
@@ -20,7 +21,7 @@ const lessonResolvers = {
       // Return a single lesson by ID
       return Lesson.findById(id);
     },
-    lessonsByCourse: (parent, { courseId }) => {
+    lessonsByCourse: async (parent, { courseId }) => {
       return Course.findById(courseId)
         .populate("lessons") // Make sure this field name matches your Course model
         .then((course) => (course ? course.lessons : []))
@@ -36,22 +37,16 @@ const lessonResolvers = {
       args: {
         title: { type: GraphQLNonNull(GraphQLString) },
         content: { type: GraphQLString },
-        courseId: { type: GraphQLNonNull(GraphQLID) }, // The ID of the course to add the lesson to
-        // Include other fields as needed
+        quiz: { type: QuizInputType },
       },
       async resolve(parent, args) {
         // Create a new lesson
         const newLesson = new Lesson({
           title: args.title,
           content: args.content,
-          // Set other fields as needed
+          quiz: args.quiz,
         });
         const savedLesson = await newLesson.save();
-
-        // Add the lesson to the course
-        await Course.findByIdAndUpdate(args.courseId, {
-          $push: { lessons: savedLesson._id },
-        });
 
         return savedLesson;
       },

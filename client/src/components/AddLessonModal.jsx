@@ -1,152 +1,91 @@
 import { useState } from "react";
-// import { FaBook } from "react-icons/fa"; // Changed icon to represent courses
+import QuizForm from "./QuizForm";
+import { GET_LESSONS } from "../queries/lessonsQueries";
+import { ADD_LESSON } from "../mutations/lessonMutations";
 import { useMutation } from "@apollo/client";
-import { ADD_COURSE } from "../mutations/courseMutations"; // Assuming you have course mutations defined
-import { GET_COURSES } from "../queries/courseQueries"; // Assuming you have course queries defined
 
-export default function AddCourseModal() {
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [difficulty, setDifficulty] = useState("Beginner");
-  const [topics, setTopics] = useState("");
-  const [lessons, setLessons] = useState("");
+export default function AddLessonModal({ onSaveLessonId, onSaveLesson }) {
+  const [lessonTitle, setLessonTitle] = useState("");
+  const [lessonContent, setLessonContent] = useState("");
+  const [quiz, setQuiz] = useState(null);
 
-  const [addCourse] = useMutation(ADD_COURSE, {
+  const [addLesson] = useMutation(ADD_LESSON, {
     variables: {
-      title,
-      description,
-      difficulty,
-      topics: topics.split(",").map((topic) => topic.trim()),
-      lessons: lessons.split(",").map((lesson) => lesson.trim()),
+      title: lessonTitle,
+      content: lessonContent,
+      quiz: { questions: quiz },
     },
-    update(cache, { data: { addCourse } }) {
-      const data = cache.readQuery({ query: GET_COURSES });
+    update(cache, { data: { addLesson } }) {
+      const data = cache.readQuery({ query: GET_LESSONS });
       if (data) {
-        const { courses } = data;
         cache.writeQuery({
-          query: GET_COURSES,
-          data: { courses: [...courses, addCourse] },
+          query: GET_LESSONS,
+          data: { lessons: [...data.lessons, addLesson] },
         });
       }
     },
+    onError(error) {
+      console.error("Error executing addLesson mutation:", error);
+    },
   });
 
-  const onSubmit = (e) => {
-    e.preventDefault();
-
-    if (title === "" || description === "" || difficulty === "") {
-      return alert("Please fill in all fields");
-    }
-
-    addCourse();
-
-    setTitle("");
-    setDescription("");
-    setDifficulty("Beginner");
-    setTopics("");
+  const addQuiz = (quiz) => {
+    setQuiz(quiz);
   };
 
-  return (
-    <>
-      {/* <button
-        type="button"
-        className="btn btn-primary"
-        data-bs-toggle="modal"
-        data-bs-target="#addCourseModal"
-      >
-        <div className="d-flex align-items-center">
-          <FaBook className="icon" />
-          <div>New Course</div>
-        </div>
-      </button> */}
+  const saveLesson = async (e) => {
+    e.preventDefault();
+    e.stopPropagation();
 
-      <div
-        className="modal fade"
-        id="addCourseModal"
-        aria-labelledby="addCourseModalLabel"
-        aria-hidden="true"
-      >
-        <div className="modal-dialog">
-          <div className="modal-content">
-            <div className="modal-header">
-              <h5 className="modal-title" id="addCourseModalLabel">
-                New Course
-              </h5>
-              <button
-                type="button"
-                className="btn-close"
-                data-bs-dismiss="modal"
-                aria-label="Close"
-              ></button>
-            </div>
-            <div className="modal-body">
-              <form onSubmit={onSubmit}>
-                <div className="mb-3">
-                  <label className="form-label">Title</label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    id="title"
-                    value={title}
-                    onChange={(e) => setTitle(e.target.value)}
-                  />
-                </div>
-                <div className="mb-3">
-                  <label className="form-label">Description</label>
-                  <textarea
-                    className="form-control"
-                    id="description"
-                    value={description}
-                    onChange={(e) => setDescription(e.target.value)}
-                  ></textarea>
-                </div>
-                <div className="mb-3">
-                  <label className="form-label">Difficulty</label>
-                  <select
-                    id="difficulty"
-                    className="form-select"
-                    value={difficulty}
-                    onChange={(e) => setDifficulty(e.target.value)}
-                  >
-                    <option value="Beginner">Beginner</option>
-                    <option value="Intermediate">Intermediate</option>
-                    <option value="Advanced">Advanced</option>
-                  </select>
-                </div>
-                <div className="mb-3">
-                  <label className="form-label">Topics (comma-separated)</label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    id="topics"
-                    value={topics}
-                    onChange={(e) => setTopics(e.target.value)}
-                    placeholder="e.g., HTML, CSS, JavaScript"
-                  />
-                </div>
-                <div className="mb-3">
-                  <label className="form-label">Topics (comma-separated)</label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    id="lessons"
-                    value={topics}
-                    onChange={(e) => setLessons(e.target.value)}
-                    placeholder="loops, arrow functions, etc."
-                  />
-                </div>
-                <button
-                  type="submit"
-                  data-bs-dismiss="modal"
-                  className="btn btn-primary"
-                >
-                  Submit
-                </button>
-              </form>
-            </div>
-          </div>
+    addLesson()
+      .then((response) => {
+        // Assuming the ID is returned under response.data.addLesson._id
+        const newLessonId = response.data.addLesson.id;
+        const newLesson = response.data.addLesson;
+
+        // Call onSaveLesson with the new lesson ID
+        onSaveLessonId(newLessonId);
+        onSaveLesson(newLesson);
+      })
+      .catch((error) => {
+        console.error("Error saving lesson:", error);
+      });
+
+    // Reset lesson and quiz data
+    setLessonTitle("");
+    setLessonContent("");
+    setQuiz(null);
+  };
+  return (
+    <div className="container d-flex flex-column justify-content-center align-items-center vh-100 vw-100">
+      <div className="row justify-content-center bg-secondary p-4 rounded w-50">
+        <div className="col-12 col-md-8 mb-3">
+          <input
+            type="text"
+            className="form-control mb-2"
+            value={lessonTitle}
+            onChange={(e) => setLessonTitle(e.target.value)}
+            placeholder="Lesson Title"
+          />
+        </div>
+        <div className="col-12 col-md-8 ">
+          <textarea
+            className="form-control"
+            value={lessonContent}
+            onChange={(e) => setLessonContent(e.target.value)}
+            placeholder="Lesson Content"
+            rows="3"
+          ></textarea>
         </div>
       </div>
-    </>
+      <div className="row w-100 justify-content-center">
+        <div className="col-12 col-md-8 text-center">
+          <QuizForm onAddQuiz={addQuiz} />
+        </div>
+        <button className="btn btn-primary mt-3 w-50" onClick={saveLesson}>
+          Save Lesson
+        </button>
+      </div>
+    </div>
   );
 }

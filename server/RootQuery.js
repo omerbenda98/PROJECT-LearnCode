@@ -10,6 +10,7 @@ const UserType = require("./types/UserType");
 const { QuizType } = require("./types/QuizType");
 const courseMutations = require("./resolvers/courseResolvers");
 const lessonResolvers = require("./resolvers/lessonResolvers");
+// const quizResolvers = require("./resolvers/quizResolvers");
 
 // import Course from "./models/Course";
 
@@ -39,9 +40,18 @@ const RootQueryType = new GraphQLObjectType({
       args: { courseId: { type: GraphQLNonNull(GraphQLID) } },
       resolve: lessonResolvers.Query.lessonsByCourse,
     },
-    user: {
-      type: UserType,
-    },
+    // quizByID: {
+    //   type: QuizType,
+    //   args: { quizId: { type: GraphQLNonNull(GraphQLID) } },
+    //   resolve: quizResolvers.Query.quizByID,
+    // },
+    // quizzes: {
+    //   type: new GraphQLList(QuizType),
+    //   resolve: quizResolvers.Query.quizzes,
+    // },
+    // user: {
+    //   type: UserType,
+    // },
     // Additional fields as needed...
   },
 });

@@ -9,12 +9,11 @@ const {
 const { CourseType } = require("../types/CourseType");
 const LessonType = require("../types/LessonType");
 const Lesson = require("../models/Lesson");
-const LessonInputType = require("../types/LessonInputType");
+const { LessonInputType } = require("../types/inputTypes");
 
 const courseMutations = {
   Query: {
     courses: () => {
-      console.log("here");
       return Course.find();
       // logic to return courses
     },
@@ -31,22 +30,15 @@ const courseMutations = {
         description: { type: GraphQLString },
         difficulty: { type: GraphQLString },
         topics: { type: new GraphQLList(GraphQLString) },
-        lessons: { type: new GraphQLList(LessonInputType) },
+        lessons: { type: new GraphQLList(GraphQLNonNull(GraphQLID)) },
       },
       resolve: async (parent, args) => {
-        // Create lesson documents from the input
-        const lessonDocuments = args.lessons.map(
-          (lesson) => new Lesson(lesson)
-        );
-        // Save all lessons and collect their IDs
-        await Promise.all(lessonDocuments.map((lesson) => lesson.save()));
-
         const course = new Course({
           title: args.title,
           description: args.description,
           difficulty: args.difficulty,
           topics: args.topics,
-          lessons: lessonDocuments, // Store only lesson IDs in the course document
+          lessons: args.lessons, // Store only lesson IDs in the course document
         });
 
         return course.save();
@@ -85,16 +77,6 @@ const courseMutations = {
       },
       resolve(parent, args) {
         return Course.findByIdAndDelete(args.id);
-      },
-    },
-    // Add a lesson
-    addLesson: {
-      type: LessonType,
-      args: {
-        // Add necessary arguments
-      },
-      resolve(parent, args) {
-        // Implementation for adding a lesson
       },
     },
   },

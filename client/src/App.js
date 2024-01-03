@@ -5,6 +5,8 @@ import Home from "./pages/Home";
 import NotFound from "./pages/NotFound";
 import Course from "./pages/Course";
 import Lesson from "./pages/Lesson";
+// import Quiz from "./pages/Quiz";
+// import Quiz from "./pages/Quiz";
 
 // const cache = new InMemoryCache({
 //   typePolicies: {
@@ -59,7 +61,9 @@ function App() {
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/courses/:id" element={<Course />}>
-                <Route path="lessons/:lessonId" element={<Lesson />} />
+                <Route path="lessons/:lessonId" element={<Lesson />}>
+                  {/* <Route path="quiz/:quizId" element={<Quiz />} /> */}
+                </Route>
               </Route>
               <Route path="*" element={<NotFound />} />
             </Routes>

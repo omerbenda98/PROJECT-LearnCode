@@ -1,8 +1,9 @@
 import { useState } from "react";
-import { FaBook, FaCheck } from "react-icons/fa"; // Changed icon to represent courses
+import { FaBook } from "react-icons/fa";
 import { useMutation } from "@apollo/client";
-import { ADD_COURSE } from "../mutations/courseMutations"; // Assuming you have course mutations defined
-import { GET_COURSES } from "../queries/courseQueries"; // Assuming you have course queries defined
+import { ADD_COURSE } from "../mutations/courseMutations";
+import { GET_COURSES } from "../queries/courseQueries";
+import AddLessonModal from "./AddLessonModal";
 
 export default function AddCourseModal() {
   const [title, setTitle] = useState("");
@@ -10,63 +11,67 @@ export default function AddCourseModal() {
   const [difficulty, setDifficulty] = useState("Beginner");
   const [topics, setTopics] = useState("");
   const [lessons, setLessons] = useState([]);
+  const [lessonsIds, setLessonsIds] = useState([]);
+  const [showLessonForm, setShowLessonForm] = useState(false);
 
-  const [newLessonTitle, setNewLessonTitle] = useState("");
-  const [newLessonContent, setNewLessonContent] = useState("");
-
-  const [addCourse, { error }] = useMutation(ADD_COURSE, {
+  // GraphQL Mutations
+  const [addCourse] = useMutation(ADD_COURSE, {
     variables: {
       title,
       description,
       difficulty,
       topics: topics.split(",").map((topic) => topic.trim()),
-      lessons,
+      lessons: lessonsIds,
     },
     update(cache, { data: { addCourse } }) {
-      console.log("here");
       const data = cache.readQuery({ query: GET_COURSES });
       if (data) {
-        const { courses } = data;
         cache.writeQuery({
           query: GET_COURSES,
-          data: { courses: [...courses, addCourse] },
+          data: { courses: [...data.courses, addCourse] },
         });
       }
     },
+    onError(error) {
+      console.error("Error executing addCourse mutation:", error);
+    },
   });
 
-  if (error) {
-    console.error("Error executing addCourse mutation:", error);
-  }
-
-  const addLesson = () => {
-    console.log(lessons);
-    if (newLessonTitle !== "" && newLessonContent !== "") {
-      setLessons([
-        ...lessons,
-        { title: newLessonTitle, content: newLessonContent },
-      ]);
-      setNewLessonTitle("");
-      setNewLessonContent("");
-    } else {
-      alert("Please fill in both title and content for the lesson");
-    }
+  const saveLesson = (lessonId) => {
+    setLessonsIds([...lessonsIds, lessonId]);
+    setShowLessonForm(false);
   };
 
-  const onSubmit = (e) => {
-    e.preventDefault();
+  const handleSavedLessons = (lesson) => {
+    setLessons([...lessons, lesson]);
+  };
 
-    if (title === "" || description === "" || difficulty === "") {
-      return alert("Please fill in all fields");
+  const onSubmit = async (e) => {
+    try {
+      e.preventDefault();
+      if (!title || !description || !difficulty) {
+        alert("Please fill in all fields");
+        return;
+      }
+
+      await addCourse({
+        variables: {
+          title: title,
+          description: description,
+          difficulty: difficulty,
+          topics: topics,
+          lessons: lessonsIds,
+        },
+      });
+      // Reset form fields
+      setTitle("");
+      setDescription("");
+      setDifficulty("Beginner");
+      setTopics("");
+      setLessonsIds([]);
+    } catch (error) {
+      console.error("Error adding course:", error);
     }
-
-    addCourse();
-
-    setTitle("");
-    setDescription("");
-    setDifficulty("Beginner");
-    setTopics("");
-    setLessons([]);
   };
 
   return (
@@ -148,30 +153,52 @@ export default function AddCourseModal() {
                   />
                 </div>
                 <div className="mb-3">
-                  <label className="form-label">Lessons</label>
-                  {lessons.map((lesson, index) => (
-                    <div key={index} className="d-flex align-items-center mb-2">
-                      <FaCheck className="text-success me-2" />
-                      {lesson.title}
+                  <div className="mb-3">
+                    <label className="form-label">Lessons</label>
+                    <div className="mb-3">
+                      {lessons.map((lesson, index) => (
+                        <div key={index} className="row mb-2">
+                          <div className="col">
+                            <strong>Title:</strong> {lesson.title}
+                          </div>
+                          <div className="col">
+                            <strong>Content:</strong> {lesson.content}
+                          </div>
+                          <div className="col">
+                            <strong>Quiz added?</strong>{" "}
+                            {lesson.quiz.questions ? "YES" : "NO"}
+                          </div>
+                        </div>
+                      ))}
+
+                      {/* ... other code ... */}
                     </div>
-                  ))}
-                  <input
-                    type="text"
-                    className="form-control mb-2"
-                    value={newLessonTitle}
-                    onChange={(e) => setNewLessonTitle(e.target.value)}
-                    placeholder="Lesson title"
-                  />
-                  <textarea
-                    className="form-control mb-2"
-                    value={newLessonContent}
-                    onChange={(e) => setNewLessonContent(e.target.value)}
-                    placeholder="Lesson content"
-                  ></textarea>
+                    {/* {quizzes.map((quiz, index) => (
+                      <div
+                        key={index}
+                        className="d-flex align-items-center mb-2"
+                      >
+                        <FaCheck className="text-success me-2" />
+                        Quiz {index + 1}
+                      </div>
+                    ))} */}
+                  </div>
+                  {showLessonForm && (
+                    <div
+                      className="modal fade show"
+                      style={{ display: "block" }}
+                    >
+                      {/* You can style this modal as needed */}
+                      <AddLessonModal
+                        onSaveLessonId={saveLesson}
+                        onSaveLesson={handleSavedLessons}
+                      />
+                    </div>
+                  )}
                   <button
                     type="button"
                     className="btn btn-secondary mb-3"
-                    onClick={addLesson}
+                    onClick={() => setShowLessonForm(true)}
                   >
                     Add Lesson
                   </button>

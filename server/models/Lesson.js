@@ -7,8 +7,13 @@ const lessonSchema = new mongoose.Schema({
   },
   content: String,
   quiz: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Quiz",
+    questions: [
+      {
+        text: String,
+        options: [String],
+        answer: String,
+      },
+    ],
   },
 });
 

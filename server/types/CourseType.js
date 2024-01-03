@@ -14,7 +14,7 @@ const CourseType = new GraphQLObjectType({
     description: { type: GraphQLString },
     difficulty: { type: GraphQLString }, // e.g., 'Beginner', 'Intermediate', 'Advanced'
     topics: { type: new GraphQLList(GraphQLString) }, // List of topics covered
-    lessons: { type: new GraphQLList(LessonType) }, // Linked to LessonType
+    lessons: { type: new GraphQLList(GraphQLID) }, // Linked to LessonType
   }),
 });
 

@@ -18,6 +18,12 @@ function LessonRow({ lesson, courseId }) {
         <button className="btn btn-danger m-2">
           <FaTrash className="icon" /> Delete lesson
         </button>
+        {/* <Link
+          to={`/courses/${courseId}/lessons/${lesson.id}/quiz/${lesson.quizId}`}
+          className="btn btn-secondary"
+        >
+          Test Your Knowlwge
+        </Link> */}
         {/* Card text for content */}
       </div>
     </div>

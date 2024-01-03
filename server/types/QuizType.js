@@ -1,25 +1,25 @@
-const {
-  GraphQLObjectType,
-  GraphQLString,
-  GraphQLID,
-  GraphQLList,
-} = require("graphql");
+// const {
+//   GraphQLObjectType,
+//   GraphQLString,
+//   GraphQLID,
+//   GraphQLList,
+// } = require("graphql");
 
-const QuizType = new GraphQLObjectType({
-  name: "Quiz",
-  fields: () => ({
-    id: { type: GraphQLID },
-    questions: { type: new GraphQLList(QuestionType) }, // Questions in the quiz
-  }),
-});
-const QuestionType = new GraphQLObjectType({
-  name: "Question",
-  fields: () => ({
-    id: { type: GraphQLID },
-    text: { type: GraphQLString }, // Question text
-    options: { type: new GraphQLList(GraphQLString) }, // Multiple choice options
-    answer: { type: GraphQLString }, // Correct answer
-  }),
-});
+// const QuizType = new GraphQLObjectType({
+//   name: "Quiz",
+//   fields: () => ({
+//     id: { type: GraphQLID },
+//     questions: { type: new GraphQLList(QuestionType) },
+//   }),
+// });
+// const QuestionType = new GraphQLObjectType({
+//   name: "Question",
+//   fields: () => ({
+//     id: { type: GraphQLID },
+//     text: { type: GraphQLString }, // Question text
+//     options: { type: new GraphQLList(GraphQLString) }, // Multiple choice options
+//     answer: { type: GraphQLString }, // Correct answer
+//   }),
+// });
 
-module.exports = { QuestionType, QuizType };
+// module.exports = { QuestionType, QuizType };

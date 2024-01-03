@@ -9,23 +9,30 @@ import LessonRow from "../components/LessonRow";
 
 export default function Course() {
   const { id } = useParams();
+
   const {
     loading: courseLoading,
     error: courseError,
     data: courseData,
   } = useQuery(GET_COURSE, { variables: { id } });
+
   const {
     loading: lessonsLoading,
     error: lessonsError,
     data: lessonsData,
   } = useQuery(GET_LESSONS_BY_COURSE, { variables: { courseId: id } });
 
+  // Render loading spinner while data is being fetched
   if (courseLoading || lessonsLoading) return <Spinner />;
+
+  // Render error message if there's an error
   if (courseError || lessonsError) return <p>Something Went Wrong</p>;
 
+  // Check if course data is loaded
   if (!courseData || !courseData.course)
     return <p>Loading course details...</p>;
 
+  // Destructure course data for rendering
   const {
     title,
     description,
@@ -40,7 +47,7 @@ export default function Course() {
         Back
       </Link>
 
-      {/* Wrapper for centering */}
+      {/* Course details */}
       <div className="text-center">
         <h1>{title}</h1>
         <p>{description}</p>
@@ -56,9 +63,9 @@ export default function Course() {
 
       <h5 className="mt-3 text-center">Lessons</h5>
 
+      {/* List of lessons */}
       <div className="row">
         <div className="col-md-6">
-          {/* Adjust the column size as needed */}
           {lessonsData && lessonsData.lessonsByCourse.length > 0 ? (
             lessonsData.lessonsByCourse.map((lesson) => (
               <LessonRow key={lesson.id} lesson={lesson} courseId={courseId} />
@@ -69,7 +76,6 @@ export default function Course() {
         </div>
 
         <div className="col-md-6">
-          {/* Adjust the column size as needed */}
           <Outlet />
         </div>
       </div>
