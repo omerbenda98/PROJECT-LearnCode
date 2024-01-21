@@ -7,17 +7,11 @@ const userSchema = new mongoose.Schema({
   },
   email: {
     type: String,
+    unique: true,
     required: true,
   },
-  progress: [
-    {
-      courseId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Course",
-      },
-      completedLessons: [mongoose.Schema.Types.ObjectId], // IDs of completed lessons
-    },
-  ],
+  password: { type: String },
+  token: { type: String },
 });
 
 module.exports = mongoose.model("User", userSchema);

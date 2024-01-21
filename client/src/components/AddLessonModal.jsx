@@ -4,7 +4,11 @@ import { GET_LESSONS } from "../queries/lessonsQueries";
 import { ADD_LESSON } from "../mutations/lessonMutations";
 import { useMutation } from "@apollo/client";
 
-export default function AddLessonModal({ onSaveLessonId, onSaveLesson }) {
+export default function AddLessonModal({
+  onSaveLessonId,
+  onSaveLesson,
+  onCancel,
+}) {
   const [lessonTitle, setLessonTitle] = useState("");
   const [lessonContent, setLessonContent] = useState("");
   const [quiz, setQuiz] = useState(null);
@@ -57,8 +61,8 @@ export default function AddLessonModal({ onSaveLessonId, onSaveLesson }) {
     setQuiz(null);
   };
   return (
-    <div className="container d-flex flex-column justify-content-center align-items-center vh-100 vw-100">
-      <div className="row justify-content-center bg-secondary p-4 rounded w-50">
+    <div className="container d-flex flex-column justify-content-center align-items-center h-100">
+      <div className="row justify-content-center bg-secondary p-4 rounded w-100">
         <div className="col-12 col-md-8 mb-3">
           <input
             type="text"
@@ -79,12 +83,21 @@ export default function AddLessonModal({ onSaveLessonId, onSaveLesson }) {
         </div>
       </div>
       <div className="row w-100 justify-content-center">
-        <div className="col-12 col-md-8 text-center">
-          <QuizForm onAddQuiz={addQuiz} />
+        <QuizForm onAddQuiz={addQuiz} />
+        <div className="bg-secondary p-4 rounded w-100 d-flex justify-content-center">
+          <button
+            className="row btn btn-primary mt-3 w-25"
+            onClick={saveLesson}
+          >
+            Save Lesson
+          </button>
+          <button
+            className="row btn btn-secondary mt-3 w-25"
+            onClick={onCancel} // Directly use the passed function here
+          >
+            Cancel
+          </button>
         </div>
-        <button className="btn btn-primary mt-3 w-50" onClick={saveLesson}>
-          Save Lesson
-        </button>
       </div>
     </div>
   );

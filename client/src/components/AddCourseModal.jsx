@@ -41,7 +41,11 @@ export default function AddCourseModal() {
     setLessonsIds([...lessonsIds, lessonId]);
     setShowLessonForm(false);
   };
-
+  const handleCancelLesson = () => {
+    // Logic to close the AddLessonModal
+    setShowLessonForm(false);
+    // Reset other states or perform additional cleanup if necessary
+  };
   const handleSavedLessons = (lesson) => {
     setLessons([...lessons, lesson]);
   };
@@ -192,6 +196,7 @@ export default function AddCourseModal() {
                       <AddLessonModal
                         onSaveLessonId={saveLesson}
                         onSaveLesson={handleSavedLessons}
+                        onCancel={handleCancelLesson}
                       />
                     </div>
                   )}

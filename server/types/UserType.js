@@ -4,7 +4,6 @@ const {
   GraphQLID,
   GraphQLList,
 } = require("graphql");
-const { CourseProgressType } = require("./CourseType");
 
 const UserType = new GraphQLObjectType({
   name: "User",
@@ -12,7 +11,8 @@ const UserType = new GraphQLObjectType({
     id: { type: GraphQLID },
     username: { type: GraphQLString },
     email: { type: GraphQLString },
-    progress: { type: new GraphQLList(CourseProgressType) }, // User's progress in courses
+    password: { type: GraphQLString },
+    token: { type: GraphQLString },
   }),
 });
 
