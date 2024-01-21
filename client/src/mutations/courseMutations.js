@@ -32,7 +32,6 @@ const UPDATE_COURSE = gql`
     $description: String
     $difficulty: String
     $topics: [String]
-    $lessons: [ID!]
   ) {
     updateCourse(
       id: $id
@@ -40,18 +39,13 @@ const UPDATE_COURSE = gql`
       description: $description
       difficulty: $difficulty
       topics: $topics
-      lessons: $lessons
     ) {
       id
       title
       description
       difficulty
       topics
-      lessons {
-        id
-        title
-        content
-      }
+      lessons
     }
   }
 `;

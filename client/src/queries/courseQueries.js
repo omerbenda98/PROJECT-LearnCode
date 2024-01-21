@@ -8,6 +8,7 @@ const GET_COURSES = gql`
       description
       difficulty
       topics
+      lessons
     }
   }
 `;
@@ -20,6 +21,7 @@ const GET_COURSE = gql`
       description
       difficulty
       topics
+      lessons
     }
   }
 `;

@@ -4,10 +4,10 @@ import AddCourseModal from "../components/AddCourseModal";
 export default function Home() {
   return (
     <>
+      <Courses />
       <div className="d-flex gap-3 mb-4">
         <AddCourseModal />
       </div>
-      <Courses />
       <hr />
     </>
   );

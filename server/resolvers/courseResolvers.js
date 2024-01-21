@@ -53,6 +53,7 @@ const courseMutations = {
         description: { type: GraphQLString },
         difficulty: { type: GraphQLString },
         topics: { type: new GraphQLList(GraphQLString) },
+        // lessons: { type: new GraphQLList(GraphQLNonNull(GraphQLID)) },
       },
       resolve(parent, args) {
         return Course.findByIdAndUpdate(
