@@ -1,6 +1,6 @@
 const courseMutations = require("./resolvers/courseResolvers");
 const lessonResolvers = require("./resolvers/lessonResolvers");
-const quizResolvers = require("./resolvers/quizResolvers");
+const userResolvers = require("./resolvers/userResolvers");
 const { GraphQLObjectType } = require("graphql");
 
 const MutationType = new GraphQLObjectType({
@@ -8,7 +8,7 @@ const MutationType = new GraphQLObjectType({
   fields: {
     ...courseMutations.Mutation,
     ...lessonResolvers.Mutation,
-    // ...quizResolvers.Mutation,
+    ...userResolvers.Mutation,
   },
 });
 

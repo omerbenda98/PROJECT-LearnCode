@@ -10,27 +10,9 @@ import ParticleRing from "./components/ParticleRing";
 import "./index.css";
 import Navbar from "./components/Navbar";
 import About from "./pages/About";
-// import Quiz from "./pages/Quiz";
-// import Quiz from "./pages/Quiz";
-
-// const cache = new InMemoryCache({
-//   typePolicies: {
-//     Query: {
-//       fields: {
-//         clients: {
-//           merge(existing, incoming) {
-//             return incoming;
-//           },
-//         },
-//         projects: {
-//           merge(existing, incoming) {
-//             return incoming;
-//           },
-//         },
-//       },
-//     },
-//   },
-// });
+import Register from "./pages/Register";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const cache = new InMemoryCache({
   typePolicies: {
@@ -59,6 +41,7 @@ const client = new ApolloClient({
 function App() {
   return (
     <>
+      <ToastContainer />
       <ApolloProvider client={client}>
         <Router>
           <Navbar />
@@ -67,6 +50,8 @@ function App() {
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/about" element={<About />} />
+              {/* <Route path="/login" element={<Login/>} /> */}
+              <Route path="/register" element={<Register />} />
               <Route path="/courses/:id" element={<Course />}>
                 <Route path="lessons/:lessonId" element={<Lesson />}>
                   {/* <Route path="quiz/:quizId" element={<Quiz />} /> */}

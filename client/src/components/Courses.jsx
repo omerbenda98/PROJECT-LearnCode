@@ -15,7 +15,7 @@ export default function Courses() {
     <>
       <BouncyCardsFeatures />
       {data.courses.length > 0 ? (
-        <div className="d-flex mt-4">
+        <div className=" mt-4">
           {data.courses.map((course) => (
             <SquishyCard key={course.id} course={course} />
           ))}

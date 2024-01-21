@@ -8,6 +8,8 @@ import {
   SiCss3,
 } from "react-icons/si";
 import { RiJavascriptLine } from "react-icons/ri";
+import EncryptedButton from "./EncryptedButton";
+import { useNavigate } from "react-router-dom";
 
 const IconSideNav = () => {
   return (
@@ -23,27 +25,41 @@ const IconSideNav = () => {
 
 const SideNav = () => {
   const [selected, setSelected] = useState(0);
+  const navigate = useNavigate();
+
+  const handleLoginClick = () => {
+    navigate("/login");
+  };
+
+  const handleRegisterClick = () => {
+    navigate("/register");
+  };
 
   return (
     // NOTE: In prod, you'd likely set height to h-screen and fix to the viewport
-    <nav className="h-[500px] w-100 h-25 sticky top-0 z-10 bg-slate-950 p-4 flex flex-row items-center gap-2">
+    <nav className="h-[500px] w-100 h-25 sticky top-0 z-10 bg-slate-950 p-4 flex justify-between items-center">
       {/* Temp logo from https://logoipsum.com/ */}
-
-      <NavItem selected={selected === 0} id={0} setSelected={setSelected}>
-        <SiTailwindcss className="bright-icon" />
-      </NavItem>
-      <NavItem selected={selected === 1} id={1} setSelected={setSelected}>
-        <SiReact className="bright-icon" />
-      </NavItem>
-      <NavItem selected={selected === 2} id={2} setSelected={setSelected}>
-        <RiJavascriptLine className="bright-icon" />
-      </NavItem>
-      <NavItem selected={selected === 3} id={3} setSelected={setSelected}>
-        <SiFramer className="bright-icon" />
-      </NavItem>
-      <NavItem selected={selected === 4} id={4} setSelected={setSelected}>
-        <SiCss3 className="bright-icon" />
-      </NavItem>
+      <div className="flex flex-row gap-2">
+        <NavItem selected={selected === 0} id={0} setSelected={setSelected}>
+          <SiTailwindcss className="bright-icon" />
+        </NavItem>
+        <NavItem selected={selected === 1} id={1} setSelected={setSelected}>
+          <SiReact className="bright-icon" />
+        </NavItem>
+        <NavItem selected={selected === 2} id={2} setSelected={setSelected}>
+          <RiJavascriptLine className="bright-icon" />
+        </NavItem>
+        <NavItem selected={selected === 3} id={3} setSelected={setSelected}>
+          <SiFramer className="bright-icon" />
+        </NavItem>
+        <NavItem selected={selected === 4} id={4} setSelected={setSelected}>
+          <SiCss3 className="bright-icon" />
+        </NavItem>
+      </div>
+      <div className="flex flex-row gap-2">
+        <EncryptedButton text="LOGIN" onClick={handleLoginClick} />
+        <EncryptedButton text="REGISTER" onClick={handleRegisterClick} />
+      </div>
     </nav>
   );
 };

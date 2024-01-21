@@ -6,13 +6,11 @@ const {
 } = require("graphql");
 const { CourseType } = require("./types/CourseType");
 const LessonType = require("./types/LessonType");
-const UserType = require("./types/UserType");
+const { UserType } = require("./types/UserType");
 const { QuizType } = require("./types/QuizType");
 const courseMutations = require("./resolvers/courseResolvers");
 const lessonResolvers = require("./resolvers/lessonResolvers");
-// const quizResolvers = require("./resolvers/quizResolvers");
-
-// import Course from "./models/Course";
+const userResolvers = require("./resolvers/userResolvers");
 
 const RootQueryType = new GraphQLObjectType({
   name: "RootQueryType",
@@ -40,19 +38,19 @@ const RootQueryType = new GraphQLObjectType({
       args: { courseId: { type: GraphQLNonNull(GraphQLID) } },
       resolve: lessonResolvers.Query.lessonsByCourse,
     },
-    // quizByID: {
-    //   type: QuizType,
-    //   args: { quizId: { type: GraphQLNonNull(GraphQLID) } },
-    //   resolve: quizResolvers.Query.quizByID,
-    // },
-    // quizzes: {
-    //   type: new GraphQLList(QuizType),
-    //   resolve: quizResolvers.Query.quizzes,
-    // },
     // user: {
     //   type: UserType,
     // },
     // Additional fields as needed...
+  },
+  users: {
+    type: new GraphQLList(UserType),
+    resolve: userResolvers.Query.courses,
+  },
+  user: {
+    type: UserType,
+    args: { id: { type: GraphQLNonNull(GraphQLID) } },
+    resolve: userResolvers.Query.course,
   },
 });
 
