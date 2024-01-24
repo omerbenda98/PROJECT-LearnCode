@@ -1,9 +1,14 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaBook } from "react-icons/fa";
 import { useMutation } from "@apollo/client";
 import { ADD_COURSE } from "../mutations/courseMutations";
 import { GET_COURSES } from "../queries/courseQueries";
 import AddLessonModal from "./AddLessonModal";
+import QuizForm from "./QuizForm";
+import StepIndicator from "./StepIndicator";
+import { GET_LESSONS } from "../queries/lessonsQueries";
+import { ADD_LESSON } from "../mutations/lessonMutations";
+import { useNavigate } from "react-router-dom";
 
 export default function AddCourseModal() {
   const [title, setTitle] = useState("");
@@ -13,8 +18,37 @@ export default function AddCourseModal() {
   const [lessons, setLessons] = useState([]);
   const [lessonsIds, setLessonsIds] = useState([]);
   const [showLessonForm, setShowLessonForm] = useState(false);
+  const [currentStep, setCurrentStep] = useState(0);
+  const [quiz, setQuiz] = useState(null);
+  const [courseFinalData, setCourseFinalData] = useState({});
+  const [lessonFinalData, setLessonFinalData] = useState({});
+  const [lessonTitle, setLessonTitle] = useState("");
+  const [lessonContent, setLessonContent] = useState("");
+  const navigate = useNavigate();
+
+  // ... other steps data ...
 
   // GraphQL Mutations
+  const [addLesson] = useMutation(ADD_LESSON, {
+    variables: {
+      title: lessonTitle,
+      content: lessonContent,
+      quiz: { questions: quiz },
+    },
+    update(cache, { data: { addLesson } }) {
+      const data = cache.readQuery({ query: GET_LESSONS });
+      if (data) {
+        cache.writeQuery({
+          query: GET_LESSONS,
+          data: { lessons: [...data.lessons, addLesson] },
+        });
+      }
+    },
+    onError(error) {
+      console.error("Error executing addLesson mutation:", error);
+    },
+  });
+
   const [addCourse] = useMutation(ADD_COURSE, {
     variables: {
       title,
@@ -37,6 +71,25 @@ export default function AddCourseModal() {
     },
   });
 
+  const saveAllLessons = async () => {
+    const savedLessonId = [];
+
+    try {
+      const savedLesson = await addLesson({
+        title: lessonTitle,
+        content: lessonContent,
+        quiz,
+      });
+      console.log(savedLesson.data.addLesson.id);
+      savedLessonId.push(savedLesson.data.addLesson.id); // Assuming the saved lesson object has an ID
+    } catch (error) {
+      console.error("Error saving lesson:", error);
+      // Handle error, possibly abort the whole operation
+    }
+
+    return savedLessonId;
+  };
+
   const saveLesson = (lessonId) => {
     setLessonsIds([...lessonsIds, lessonId]);
     setShowLessonForm(false);
@@ -47,24 +100,44 @@ export default function AddCourseModal() {
     // Reset other states or perform additional cleanup if necessary
   };
   const handleSavedLessons = (lesson) => {
-    setLessons([...lessons, lesson]);
+    console.log(lesson);
+    setLessonTitle(lesson.title);
+    setLessonContent(lesson.content);
+    setCurrentStep(currentStep + 1);
+  };
+  const goToSecondStep = () => {
+    setCourseFinalData({
+      title,
+      description,
+      difficulty,
+      topics: topics.split(",").map((topic) => topic.trim()),
+    });
+    setCurrentStep(currentStep + 1);
   };
 
-  const onSubmit = async (e) => {
-    try {
-      e.preventDefault();
-      if (!title || !description || !difficulty) {
-        alert("Please fill in all fields");
-        return;
-      }
+  // const goToFinalStep = () => {
+  //   console.log(lessonFinalData);
+  //   setLessonTitle({
+  //     title: lessonFinalData.title,
+  //     content: lessonFinalData.content,
+  //   });
+  //   setCurrentStep(currentStep + 1);
+  // };
 
+  const goToPreviousStep = () => {
+    setCurrentStep(currentStep - 1);
+  };
+
+  const handleOnSubmit = async (e) => {
+    try {
+      const lessonId = await saveAllLessons();
       await addCourse({
         variables: {
           title: title,
           description: description,
           difficulty: difficulty,
           topics: topics,
-          lessons: lessonsIds,
+          lessons: lessonId,
         },
       });
       // Reset form fields
@@ -73,70 +146,69 @@ export default function AddCourseModal() {
       setDifficulty("Beginner");
       setTopics("");
       setLessonsIds([]);
+      navigate("/");
     } catch (error) {
       console.error("Error adding course:", error);
     }
   };
+  const addQuiz = (quiz) => {
+    setQuiz(quiz);
+  };
+  // useEffect(() => {
+  //   console.log(lessonTitle);
+  //   console.log(lessonContent);
+  // }, [lessonTitle, lessonContent]);
 
   return (
     <>
       <button
         type="button"
-        className="btn btn-primary"
-        data-bs-toggle="modal"
-        data-bs-target="#addCourseModal"
+        className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 flex items-center justify-center"
+        onClick={() => setCurrentStep(1)}
       >
-        <div className="d-flex align-items-center">
-          <FaBook className="icon" />
-          <div>New Course</div>
-        </div>
+        <FaBook className="icon mr-2" />
+        <span>New Course</span>
       </button>
-
-      <div
-        className="modal fade"
-        id="addCourseModal"
-        aria-labelledby="addCourseModalLabel"
-        aria-hidden="true"
-      >
-        <div className="modal-dialog">
-          <div className="modal-content">
-            <div className="modal-header">
-              <h5 className="modal-title" id="addCourseModalLabel">
+      {currentStep === 1 && (
+        <>
+          <div className="fixed inset-0 bg-gray-900 bg-opacity-50 flex justify-center items-center ">
+            <div className="bg-white p-8 rounded-lg shadow-xl max-w-lg mx-auto w-50">
+              <StepIndicator currentStep={currentStep} />
+              <h5 className="text-lg font-semibold text-gray-700 mb-4">
                 New Course
               </h5>
-              <button
-                type="button"
-                className="btn-close"
-                data-bs-dismiss="modal"
-                aria-label="Close"
-              ></button>
-            </div>
-            <div className="modal-body">
-              <form onSubmit={onSubmit}>
-                <div className="mb-3">
-                  <label className="form-label">Title</label>
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-gray-700 font-medium mb-2">
+                    Title
+                  </label>
                   <input
                     type="text"
-                    className="form-control"
+                    className="w-full border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                     id="title"
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
                   />
                 </div>
-                <div className="mb-3">
-                  <label className="form-label">Description</label>
+                <div>
+                  <label className="block text-gray-700 font-medium mb-2">
+                    Description
+                  </label>
                   <textarea
-                    className="form-control"
+                    className="w-full border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                     id="description"
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
+                    rows="3"
                   ></textarea>
                 </div>
-                <div className="mb-3">
-                  <label className="form-label">Difficulty</label>
+                <div>
+                  <label className="block text-gray-700 font-medium mb-2">
+                    Difficulty
+                  </label>
                   <select
                     id="difficulty"
-                    className="form-select"
+                    className="w-full border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                     value={difficulty}
                     onChange={(e) => setDifficulty(e.target.value)}
                   >
@@ -145,81 +217,62 @@ export default function AddCourseModal() {
                     <option value="Advanced">Advanced</option>
                   </select>
                 </div>
-                <div className="mb-3">
-                  <label className="form-label">Topics (comma-separated)</label>
+                <div>
+                  <label className="block text-gray-700 font-medium mb-2">
+                    Topics (comma-separated)
+                  </label>
                   <input
                     type="text"
-                    className="form-control"
+                    className="w-full border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                     id="topics"
                     value={topics}
                     onChange={(e) => setTopics(e.target.value)}
                     placeholder="e.g., HTML, CSS, JavaScript"
                   />
                 </div>
-                <div className="mb-3">
-                  <div className="mb-3">
-                    <label className="form-label">Lessons</label>
-                    <div className="mb-3">
-                      {lessons.map((lesson, index) => (
-                        <div key={index} className="row mb-2">
-                          <div className="col">
-                            <strong>Title:</strong> {lesson.title}
-                          </div>
-                          <div className="col">
-                            <strong>Content:</strong> {lesson.content}
-                          </div>
-                          <div className="col">
-                            <strong>Quiz added?</strong>{" "}
-                            {lesson.quiz.questions ? "YES" : "NO"}
-                          </div>
-                        </div>
-                      ))}
-
-                      {/* ... other code ... */}
+                {showLessonForm && (
+                  <div className="fixed inset-0 bg-gray-500 bg-opacity-50 flex justify-center items-center">
+                    <div className="bg-white p-4 rounded-lg shadow-lg">
+                      {/* Modal content here */}
                     </div>
-                    {/* {quizzes.map((quiz, index) => (
-                      <div
-                        key={index}
-                        className="d-flex align-items-center mb-2"
-                      >
-                        <FaCheck className="text-success me-2" />
-                        Quiz {index + 1}
-                      </div>
-                    ))} */}
                   </div>
-                  {showLessonForm && (
-                    <div
-                      className="modal fade show"
-                      style={{ display: "block" }}
-                    >
-                      {/* You can style this modal as needed */}
-                      <AddLessonModal
-                        onSaveLessonId={saveLesson}
-                        onSaveLesson={handleSavedLessons}
-                        onCancel={handleCancelLesson}
-                      />
-                    </div>
-                  )}
+                )}
+                <div className="flex justify-end space-x-2">
                   <button
                     type="button"
-                    className="btn btn-secondary mb-3"
-                    onClick={() => setShowLessonForm(true)}
+                    className="bg-green-700 text-white py-2 px-4 rounded hover:bg-green-900"
+                    onClick={goToSecondStep}
                   >
-                    Add Lesson
+                    Next
                   </button>
                 </div>
-                <button
-                  type="submit"
-                  data-bs-dismiss="modal"
-                  className="btn btn-primary"
-                >
-                  Submit
-                </button>
-              </form>
+              </div>
             </div>
           </div>
-        </div>
-      </div>
+        </>
+      )}
+      {currentStep === 2 && (
+        <>
+          <AddLessonModal
+            onLessonPreview={goToPreviousStep}
+            onSaveLessonState={handleSavedLessons}
+            currentStep={currentStep}
+            onCancel={handleCancelLesson}
+            lessonTitleData={lessonTitle}
+            lessonContentData={lessonContent}
+          />
+        </>
+      )}
+      {currentStep === 3 && (
+        <>
+          <QuizForm
+            onAddQuiz={addQuiz}
+            currentStep={currentStep}
+            onQuizPrev={goToPreviousStep}
+            onSubmit={handleOnSubmit}
+          />
+        </>
+      )}
     </>
   );
 }

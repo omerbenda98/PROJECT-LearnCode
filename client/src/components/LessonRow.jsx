@@ -11,7 +11,7 @@ function LessonRow({ lesson, courseId }) {
         <h5 className="card-title">{lesson.title}</h5> {/* Use h5 for title */}
         <Link
           to={`/courses/${courseId}/lessons/${lesson.id}`}
-          className="btn btn-primary"
+          className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600y"
         >
           View Lesson
         </Link>

@@ -1,6 +1,12 @@
 import React, { useState } from "react";
+import StepIndicator from "./StepIndicator";
 
-export default function QuizForm({ onAddQuiz }) {
+export default function QuizForm({
+  onAddQuiz,
+  currentStep,
+  onQuizPrev,
+  onSubmit,
+}) {
   const [questions, setQuestions] = useState([
     { text: "", options: ["", "", "", ""], answer: "" },
   ]);
@@ -42,6 +48,12 @@ export default function QuizForm({ onAddQuiz }) {
       setQuizSaved(true);
     }
   };
+  const handleLessonPrev = () => {
+    onQuizPrev();
+  };
+  const handleSubmit = () => {
+    onSubmit();
+  };
 
   const handleReset = () => {
     setQuestions([{ text: "", options: ["", "", "", ""], answer: "" }]);
@@ -53,23 +65,24 @@ export default function QuizForm({ onAddQuiz }) {
   const isInputDisabled = quizSaved;
 
   return (
-    <div className="bg-secondary p-4 rounded w-100">
-      <div>
-        <div className="row justify-content-center w-100">
-          <div className="col-12 col-md-8 mb-3">
-            <input
-              type="text"
-              className="form-control mb-2"
-              value={question.text}
-              onChange={(e) => handleQuestionChange(e.target.value)}
-              placeholder="Question text"
-              disabled={isInputDisabled}
-            />
+    <>
+      <div className="fixed inset-0 bg-gray-900 bg-opacity-50 flex justify-center items-center z-50">
+        <div className="bg-white p-4 rounded-lg shadow-lg w-1/2 lg:w-1/3">
+          <StepIndicator currentStep={currentStep} />
+          <input
+            type="text"
+            className="border border-gray-300 rounded px-4 py-2 focus:outline-none focus:border-blue-500 m-3 w-full"
+            value={question.text}
+            onChange={(e) => handleQuestionChange(e.target.value)}
+            placeholder="Question text"
+            disabled={isInputDisabled}
+          />
+          <div className="flex flex-col items-center space-y-3">
             {question.options.map((option, oIndex) => (
               <input
                 key={oIndex}
                 type="text"
-                className="form-control mb-2"
+                className="border border-gray-300 rounded px-4 py-2 focus:outline-none focus:border-blue-500 m-3 w-full"
                 value={option}
                 onChange={(e) => handleOptionChange(oIndex, e.target.value)}
                 placeholder={`Option ${oIndex + 1}`}
@@ -78,22 +91,22 @@ export default function QuizForm({ onAddQuiz }) {
             ))}
             <input
               type="text"
-              className="form-control mb-2"
+              className="border border-gray-300 rounded px-4 py-2 focus:outline-none focus:border-blue-500 w-full"
               value={question.answer}
               onChange={(e) => handleAnswerChange(e.target.value)}
               placeholder="Correct answer"
               disabled={isInputDisabled}
             />
           </div>
-          <div className="col-12 col-md-8 text-center">
-            <p>
-              {quizSaved
-                ? "Quiz Saved"
-                : `Questions added: ${questions.length - 1}/5`}
-            </p>
+          <p className="text-center mt-2">
+            {quizSaved
+              ? "Quiz Saved"
+              : `Questions added: ${questions.length - 1}/5`}
+          </p>
+          <div className="flex flex-col  justify-center mt-4">
             <button
               type="button"
-              className="btn btn-primary me-2"
+              className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 mb-2"
               onClick={handleAddQuestion}
               disabled={currentQuestionIndex >= 5 || isInputDisabled}
             >
@@ -101,7 +114,7 @@ export default function QuizForm({ onAddQuiz }) {
             </button>
             <button
               type="button"
-              className="btn btn-success me-2"
+              className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 mb-2"
               onClick={handleSaveQuiz}
               disabled={isInputDisabled}
             >
@@ -109,15 +122,31 @@ export default function QuizForm({ onAddQuiz }) {
             </button>
             <button
               type="button"
-              className="btn btn-secondary"
+              className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
               onClick={handleReset}
               disabled={isInputDisabled}
             >
               Reset
             </button>
           </div>
+          <div className="flex justify-center mt-4 space-x-2">
+            <button
+              type="button"
+              className="bg-yellow-700 text-white py-2 px-4 rounded hover:bg-yellow-900"
+              onClick={handleLessonPrev}
+            >
+              Previous
+            </button>
+            <button
+              type="button"
+              className="bg-green-700 text-white py-2 px-4 rounded hover:bg-green-900"
+              onClick={handleSubmit}
+            >
+              Submit
+            </button>
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }

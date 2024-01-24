@@ -7,7 +7,10 @@ export default function NotFound() {
       <FaExclamationTriangle className="text-danger" size="5em" />
       <h1>404</h1>
       <p className="lead">Sorry, this page does not exist</p>
-      <Link to="/" className="btn btn-primary">
+      <Link
+        to="/"
+        className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
+      >
         Go Back
       </Link>
     </div>

@@ -1,58 +1,45 @@
-const Lesson = require("../models/Lesson");
-const Course = require("../models/Course");
+const User = require("../models/User"); // Replace with your User model path
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+const { GraphQLString, GraphQLObjectType } = require("graphql");
+const AuthDataType = require("../types/AuthType"); // Assuming this is your AuthDataType
 
-const {
-  GraphQLList,
-  GraphQLNonNull,
-  GraphQLID,
-  GraphQLString,
-  GraphQLObjectType,
-} = require("graphql");
-const LessonType = require("../types/LessonType");
-const { QuizInputType } = require("../types/inputTypes");
-
-const lessonResolvers = {
+const authResolvers = {
   Query: {
-    lessons: () => {
-      // Return all lessons
-      return Lesson.find();
-    },
-    lesson: (parent, { id }) => {
-      // Return a single lesson by ID
-      return Lesson.findById(id);
-    },
-    lessonsByCourse: async (parent, { courseId }) => {
-      return Course.findById(courseId)
-        .populate("lessons") // Make sure this field name matches your Course model
-        .then((course) => (course ? course.lessons : []))
-        .catch((err) => {
-          console.error(err);
-          throw new Error("Error fetching lessons for course");
-        });
-    },
+    // If you have any auth-related queries, define them here
   },
   Mutation: {
-    addLesson: {
-      type: LessonType,
+    login: {
+      type: AuthDataType,
       args: {
-        title: { type: GraphQLNonNull(GraphQLString) },
-        content: { type: GraphQLString },
-        quiz: { type: QuizInputType },
+        email: { type: GraphQLString },
+        password: { type: GraphQLString },
       },
-      async resolve(parent, args) {
-        // Create a new lesson
-        const newLesson = new Lesson({
-          title: args.title,
-          content: args.content,
-          quiz: args.quiz,
-        });
-        const savedLesson = await newLesson.save();
+      resolve: async (parent, { email, password }) => {
+        // Check if user exists
+        const user = await User.findOne({ email });
+        if (!user) {
+          throw new Error("User does not exist!");
+        }
 
-        return savedLesson;
+        // Compare passwords
+        const isEqual = await bcrypt.compare(password, user.password);
+        if (!isEqual) {
+          throw new Error("Password is incorrect!");
+        }
+
+        // Generate JWT
+        const token = jwt.sign(
+          { userId: user.id, email: user.email },
+          process.env.JWT_SECRET, // Use the secret from your environment variable
+          { expiresIn: "1h" }
+        );
+
+        return { userId: user.id, token: token, tokenExpiration: 1 };
       },
     },
-    // Other mutations like updateLesson, deleteLesson, etc.
+    // You can add other mutations like register, changePassword, etc.
   },
 };
 
-module.exports = lessonResolvers;
+module.exports = authResolvers;

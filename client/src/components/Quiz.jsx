@@ -32,7 +32,7 @@ const Quiz = ({ quiz }) => {
       {!quizStarted ? (
         <div className="text-center">
           <button
-            className="btn btn-primary"
+            className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
             onClick={() => setQuizStarted(true)}
           >
             Start Quiz
@@ -70,7 +70,10 @@ const Quiz = ({ quiz }) => {
               >
                 Your score: {score} out of {quiz.questions.length}
               </div>
-              <button className="btn btn-primary" onClick={resetQuiz}>
+              <button
+                className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
+                onClick={resetQuiz}
+              >
                 Try Again
               </button>
             </div>

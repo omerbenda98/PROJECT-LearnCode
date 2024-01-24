@@ -76,7 +76,7 @@ export default function EditCourseForm({ course }) {
       <h3>Update Course Details</h3>
       <form onSubmit={onSubmit}>
         <div className="mb-3">
-          <label className="form-label">Title</label>
+          <label className="text-gray-700 font-medium">Title</label>
           <input
             type="text"
             className="form-control"
@@ -86,7 +86,7 @@ export default function EditCourseForm({ course }) {
           />
         </div>
         <div className="mb-3">
-          <label className="form-label">Description</label>
+          <label className="text-gray-700 font-medium">Description</label>
           <textarea
             className="form-control"
             id="description"
@@ -95,10 +95,10 @@ export default function EditCourseForm({ course }) {
           ></textarea>
         </div>
         <div className="mb-3">
-          <label className="form-label">Difficulty</label>
+          <label className="text-gray-700 font-medium">Difficulty</label>
           <select
             id="difficulty"
-            className="form-select"
+            className="border border-gray-300 rounded px-4 py-2 focus:outline-none focus:border-blue-500"
             value={difficulty}
             onChange={(e) => setDifficulty(e.target.value)}
           >
@@ -108,7 +108,9 @@ export default function EditCourseForm({ course }) {
           </select>
         </div>
         <div className="mb-3">
-          <label className="form-label">Topics (comma-separated)</label>
+          <label className="text-gray-700 font-medium">
+            Topics (comma-separated)
+          </label>
           <input
             type="text"
             className="form-control"
@@ -128,7 +130,10 @@ export default function EditCourseForm({ course }) {
             ))}
         </ul>
 
-        <button type="submit" className="btn btn-primary">
+        <button
+          type="submit"
+          className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
+        >
           Submit
         </button>
       </form>

@@ -2,7 +2,6 @@ import { motion } from "framer-motion";
 import CrudDropdown from "./CrudDropdown";
 
 const SquishyCard = (course) => {
-  console.log(course.course);
   return (
     <section className=" px-4 py-12 z-0">
       <div>
@@ -13,7 +12,6 @@ const SquishyCard = (course) => {
 };
 
 const Card = (course) => {
-  console.log(course.course);
   return (
     <motion.div
       whileHover="hover"
@@ -26,9 +24,9 @@ const Card = (course) => {
           scale: 1.05,
         },
       }}
-      className="relative h-96 w-80 shrink-0 overflow-hidden rounded-xl bg-indigo-500 p-8"
+      className="relative h-96 w-100vw shrink-0 overflow-hidden rounded-xl bg-indigo-500 p-8"
     >
-      <div className="relative z-10 text-white">
+      <div className="relative z-0 text-white">
         <span className="mb-3 block w-fit rounded-full bg-white/30 px-3 py-0.5 text-sm font-light text-white">
           {course.course.difficulty}
         </span>
@@ -49,7 +47,7 @@ const Card = (course) => {
         </motion.span>
         <p>{course.course.description}</p>
       </div>
-      <button className="absolute bottom-4 left-4 right-4 z-10 rounded border-2 border-white bg-black py-2 text-center font-mono font-black uppercase text-neutral-300 backdrop-blur transition-colors hover:bg-white/30 hover:text-white">
+      <button className="absolute bottom-4 left-4 right-4 z-0 rounded border-2 border-white bg-black py-2 text-center font-mono font-black uppercase text-neutral-300 backdrop-blur transition-colors hover:bg-white/30 hover:text-white">
         Get Course Now
       </button>
 

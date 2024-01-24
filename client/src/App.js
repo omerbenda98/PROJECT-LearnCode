@@ -11,8 +11,11 @@ import "./index.css";
 import Navbar from "./components/Navbar";
 import About from "./pages/About";
 import Register from "./pages/Register";
+import Login from "./pages/Login";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import client from "./apolloClient";
+import { AuthProvider } from "./context/authContext";
 
 const cache = new InMemoryCache({
   typePolicies: {
@@ -33,35 +36,32 @@ const cache = new InMemoryCache({
   },
 });
 
-const client = new ApolloClient({
-  uri: "http://localhost:5000/graphql",
-  cache,
-});
-
 function App() {
   return (
     <>
       <ToastContainer />
-      <ApolloProvider client={client}>
-        <Router>
-          <Navbar />
-          <ParticleRing />
-          <div className="container">
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/about" element={<About />} />
-              {/* <Route path="/login" element={<Login/>} /> */}
-              <Route path="/register" element={<Register />} />
-              <Route path="/courses/:id" element={<Course />}>
-                <Route path="lessons/:lessonId" element={<Lesson />}>
-                  {/* <Route path="quiz/:quizId" element={<Quiz />} /> */}
+      <AuthProvider>
+        <ApolloProvider client={client}>
+          <Router>
+            <Navbar />
+            <ParticleRing />
+            <div className="container">
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/about" element={<About />} />
+                <Route path="/register" element={<Register />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/courses/:id" element={<Course />}>
+                  <Route path="lessons/:lessonId" element={<Lesson />}>
+                    {/* <Route path="quiz/:quizId" element={<Quiz />} /> */}
+                  </Route>
                 </Route>
-              </Route>
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </div>
-        </Router>
-      </ApolloProvider>
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </div>
+          </Router>
+        </ApolloProvider>
+      </AuthProvider>
     </>
   );
 }
