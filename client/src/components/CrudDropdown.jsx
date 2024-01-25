@@ -1,16 +1,24 @@
-import {
-  FiEdit,
-  FiChevronDown,
-  FiTrash,
-  FiShare,
-  FiPlusSquare,
-} from "react-icons/fi";
+import { FiEdit, FiChevronDown, FiTrash } from "react-icons/fi";
 import { motion } from "framer-motion";
-import { Dispatch, SetStateAction, useState } from "react";
-import { IconType } from "react-icons";
+import { useState } from "react";
+import { Link } from "react-router-dom";
+import { DELETE_COURSE } from "../mutations/courseMutations";
+import { useMutation } from "@apollo/client";
+import { toast } from "react-toastify";
+import { GET_COURSES } from "../queries/courseQueries";
 
-const CrudDropdown = () => {
+const CrudDropdown = (courseId) => {
   const [open, setOpen] = useState(false);
+
+  const [deleteCourse] = useMutation(DELETE_COURSE, {
+    variables: { id: courseId.courseId },
+    onCompleted: () => toast.success("Course Deleted Successfully"),
+    refetchQueries: [{ query: GET_COURSES }],
+  });
+
+  const handleDelete = () => {
+    deleteCourse({ variables: { id: courseId.courseId } });
+  };
 
   return (
     <div className="p-8 pb-56 flex items-center justify-center bg-white">
@@ -31,8 +39,14 @@ const CrudDropdown = () => {
           style={{ originY: "top", translateX: "-50%" }}
           className="flex flex-col gap-2 p-2 rounded-lg bg-white shadow-xl absolute top-[120%] left-[50%] w-48 overflow-hidden z-10"
         >
-          <Option setOpen={setOpen} Icon={FiEdit} text="Edit" />
-          <Option setOpen={setOpen} Icon={FiTrash} text="Remove" />
+          <Link to={`courses/${courseId.courseId}`}>
+            {" "}
+            <Option setOpen={setOpen} Icon={FiEdit} text="Edit" />
+          </Link>
+          <button onClick={handleDelete}>
+            {" "}
+            <Option setOpen={setOpen} Icon={FiTrash} text="Remove" />
+          </button>
         </motion.ul>
       </motion.div>
     </div>

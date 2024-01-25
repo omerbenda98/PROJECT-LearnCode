@@ -7,7 +7,7 @@ const GET_COURSES = gql`
       title
       description
       difficulty
-      topics
+      topic
       lessons
     }
   }
@@ -20,7 +20,7 @@ const GET_COURSE = gql`
       title
       description
       difficulty
-      topics
+      topic
       lessons
     }
   }

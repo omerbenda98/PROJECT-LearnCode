@@ -8,10 +8,6 @@ import Quiz from "../components/Quiz";
 function Lesson() {
   const { lessonId } = useParams();
 
-  // const { loading, error, data } = useQuery(GET_LESSON, {
-  //   variables: { id: lessonId },
-  // });
-
   const [showQuiz, setShowQuiz] = useState(false);
 
   const {

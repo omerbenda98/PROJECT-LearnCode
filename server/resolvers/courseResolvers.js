@@ -1,4 +1,4 @@
-const Course = require("../models/Course"); // Mongoose model
+const Course = require("../models/Course");
 
 const {
   GraphQLList,
@@ -7,6 +7,7 @@ const {
   GraphQLString,
 } = require("graphql");
 const { CourseType } = require("../types/CourseType");
+const { TopicType } = require("../types/CourseType");
 const LessonType = require("../types/LessonType");
 const Lesson = require("../models/Lesson");
 const { LessonInputType } = require("../types/inputTypes");
@@ -15,11 +16,9 @@ const courseMutations = {
   Query: {
     courses: () => {
       return Course.find();
-      // logic to return courses
     },
     course: (parent, args) => {
       return Course.findById(args.id);
-      // logic to return a single course
     },
   },
   Mutation: {
@@ -29,7 +28,7 @@ const courseMutations = {
         title: { type: GraphQLNonNull(GraphQLString) },
         description: { type: GraphQLString },
         difficulty: { type: GraphQLString },
-        topics: { type: new GraphQLList(GraphQLString) },
+        topic: { type: TopicType },
         lessons: { type: new GraphQLList(GraphQLNonNull(GraphQLID)) },
       },
       resolve: async (parent, args) => {
@@ -37,14 +36,14 @@ const courseMutations = {
           title: args.title,
           description: args.description,
           difficulty: args.difficulty,
-          topics: args.topics,
-          lessons: args.lessons, // Store only lesson IDs in the course document
+          topic: args.topic,
+          lessons: args.lessons,
         });
 
         return course.save();
       },
     },
-    // Update a course
+
     updateCourse: {
       type: CourseType,
       args: {
@@ -52,7 +51,7 @@ const courseMutations = {
         title: { type: GraphQLString },
         description: { type: GraphQLString },
         difficulty: { type: GraphQLString },
-        topics: { type: new GraphQLList(GraphQLString) },
+        topic: { type: TopicType },
         // lessons: { type: new GraphQLList(GraphQLNonNull(GraphQLID)) },
       },
       resolve(parent, args) {
@@ -63,14 +62,14 @@ const courseMutations = {
               title: args.title,
               description: args.description,
               difficulty: args.difficulty,
-              topics: args.topics,
+              topic: args.topic,
             },
           },
           { new: true }
         );
       },
     },
-    // Delete a course
+
     deleteCourse: {
       type: CourseType,
       args: {

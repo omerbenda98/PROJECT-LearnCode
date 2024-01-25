@@ -1,12 +1,12 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext } from "react";
 import { GET_USERS } from "../queries/userQueries";
 
 import { useMutation } from "@apollo/client";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
-import { AuthContext } from "../context/authContext"; // Assuming this is the correct path
-import { useForm } from "../hooks/useForm"; // Import useForm hook
+import { AuthContext } from "../context/authContext";
+import { useForm } from "../hooks/useForm";
 import { REGISTER } from "../mutations/authMutations";
 
 export default function Register() {
@@ -17,19 +17,18 @@ export default function Register() {
     email: "",
     password: "",
     confirmPassword: "",
-    role: "NORAML",
+    role: false,
   };
 
-  const { onChange, values } = useForm(initialState);
+  const { onChange, onSubmit, values } = useForm(initialState);
 
   const [register] = useMutation(REGISTER, {
     variables: {
       email: values.email,
       password: values.password,
-      role: values.role ? "SUBSCRIBED" : "NORMAL",
+      role: values.role === true ? "SUBSCRIBED" : "NORMAL",
     },
     onCompleted: (data) => {
-      console.log(data);
       login(data.register);
       navigate("/");
     },
@@ -44,8 +43,8 @@ export default function Register() {
     },
     onError(error) {
       console.error("Error executing register mutation:", error);
-      console.log(error.graphQLErrors); // Log GraphQL specific errors
-      console.log(error.networkError); // Log network errors
+      console.log(error.graphQLErrors);
+      console.log(error.networkError);
       toast.error("Failed to create user");
     },
   });
@@ -59,12 +58,11 @@ export default function Register() {
     }
 
     try {
-      console.log("Registering with:", values);
       await register({
         variables: {
           email: values.email,
           password: values.password,
-          role: values.role,
+          role: values.role === true ? "SUBSCRIBED" : "NORMAL",
         },
       });
       toast.success("User created successfully");
@@ -72,9 +70,6 @@ export default function Register() {
       toast.error("Failed to create user");
     }
   };
-  useEffect(() => {
-    console.log(values);
-  }, [values]);
 
   return (
     <>
@@ -159,7 +154,7 @@ export default function Register() {
                   <div className="flex items-center h-5">
                     <input
                       id="terms"
-                      name="role" // Ensure this name matches the state key
+                      name="role"
                       type="checkbox"
                       className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-primary-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-primary-600 dark:ring-offset-gray-800"
                       checked={values.role}

@@ -19,7 +19,6 @@ const QuizType = new GraphQLObjectType({
   name: "Quiz",
   fields: () => ({
     questions: { type: new GraphQLList(QuestionType) },
-    // Add other quiz fields if needed
   }),
 });
 

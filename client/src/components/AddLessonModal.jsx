@@ -1,5 +1,6 @@
 import { useState } from "react";
 import StepIndicator from "./StepIndicator";
+import { HiMiniXMark } from "react-icons/hi2";
 
 export default function AddLessonModal({
   onLessonPreview,
@@ -7,9 +8,14 @@ export default function AddLessonModal({
   currentStep,
   lessonTitleData,
   lessonContentData,
+  onCancel,
 }) {
   const [lessonTitle, setLessonTitle] = useState(lessonTitleData || "");
   const [lessonContent, setLessonContent] = useState(lessonContentData || "");
+
+  const handleCancel = () => {
+    onCancel();
+  };
 
   const handleLessonNext = () => {
     const lesson = {
@@ -17,7 +23,6 @@ export default function AddLessonModal({
       content: lessonContent,
     };
 
-    // Pass the lesson to the parent component
     onSaveLessonState(lesson);
     setLessonTitle(lesson.title);
     setLessonTitle(lesson.content);
@@ -27,6 +32,9 @@ export default function AddLessonModal({
     <>
       <div className="fixed inset-0 bg-gray-900 bg-opacity-50 flex justify-center items-center">
         <div className="max-w-lg mx-auto bg-white p-6 rounded-lg shadow-lg w-50">
+          <button onClick={handleCancel}>
+            <HiMiniXMark size={35} className="icon" />
+          </button>
           <StepIndicator currentStep={currentStep} />
           <div className="space-y-4">
             <div>
@@ -51,13 +59,13 @@ export default function AddLessonModal({
           <div className="flex justify-center space-x-2 mt-4">
             <button
               className="bg-yellow-700 text-white py-2 px-4 rounded hover:bg-yellow-900"
-              onClick={onLessonPreview} // Directly use the passed function here
+              onClick={onLessonPreview}
             >
               Previous
             </button>
             <button
               className="bg-green-700 text-white py-2 px-4 rounded hover:bg-green-900"
-              onClick={handleLessonNext} // Directly use the passed function here
+              onClick={handleLessonNext}
             >
               Next
             </button>

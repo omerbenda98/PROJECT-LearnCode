@@ -24,51 +24,48 @@ const Card = (course) => {
           scale: 1.05,
         },
       }}
-      className="relative h-96 w-100vw shrink-0 overflow-hidden rounded-xl bg-indigo-500 p-8"
+      className="relative h-96 w-96 shrink-0 overflow-hidden rounded-xl bg-indigo-900 p-8"
     >
       <div className="relative z-0 text-white">
-        <span className="mb-3 block w-fit rounded-full bg-white/30 px-3 py-0.5 text-sm font-light text-white">
+        <span className="mb-3 block w-fit rounded-full bg-white/30 px-3 py-0.7 text-lg font-light text-white">
+          {course.course.title}
+        </span>
+
+        <span className="mb-3 block w-fit rounded-full bg-black/30 px-3 py-0.5 text-sm font-light text-white">
           {course.course.difficulty}
         </span>
-        <motion.span
-          initial={{ scale: 0.85 }}
-          variants={{
-            hover: {
-              scale: 1,
-            },
-          }}
-          transition={{
-            duration: 1,
-            ease: "backInOut",
-          }}
-          className="my-2 block origin-top-left font-mono text-3xl font-black leading-[1.2]"
-        >
-          {course.course.title}
-        </motion.span>
-        <p>{course.course.description}</p>
+        <span className="mb-3 block w-fit text-md ">
+          {" "}
+          {course.course.description}
+        </span>
+        <span className="mb-3 block w-fit text-md ">
+          {" "}
+          Topic: {course.course.topic}
+        </span>
       </div>
+
       <button className="absolute bottom-4 left-4 right-4 z-0 rounded border-2 border-white bg-black py-2 text-center font-mono font-black uppercase text-neutral-300 backdrop-blur transition-colors hover:bg-white/30 hover:text-white">
         Get Course Now
       </button>
 
-      <Background />
-      <CrudDropdown />
+      <Background courseData={course.course} />
+      <CrudDropdown courseId={course.course.id} />
     </motion.div>
   );
 };
 
-const Background = () => {
+const Background = (courseData) => {
   return (
     <motion.svg
-      width="320"
-      height="384"
-      viewBox="0 0 320 384"
+      width="380"
+      height="390"
+      viewBox="0 0 320 374"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      className="absolute inset-0 z-0"
+      className="absolute inset-0 z-[-1]"
       variants={{
         hover: {
-          scale: 1.5,
+          scale: 1.1,
         },
       }}
       transition={{
@@ -107,7 +104,7 @@ const Background = () => {
         }}
         cx="160.5"
         cy="265.5"
-        rx="101.5"
+        rx="131.5"
         ry="43.5"
         fill="#262626"
       />

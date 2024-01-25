@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import StepIndicator from "./StepIndicator";
+import { HiMiniXMark } from "react-icons/hi2";
 
 export default function QuizForm({
   onAddQuiz,
   currentStep,
   onQuizPrev,
   onSubmit,
+  onCancel,
 }) {
   const [questions, setQuestions] = useState([
     { text: "", options: ["", "", "", ""], answer: "" },
@@ -54,6 +56,9 @@ export default function QuizForm({
   const handleSubmit = () => {
     onSubmit();
   };
+  const handleCancel = () => {
+    onCancel();
+  };
 
   const handleReset = () => {
     setQuestions([{ text: "", options: ["", "", "", ""], answer: "" }]);
@@ -68,6 +73,9 @@ export default function QuizForm({
     <>
       <div className="fixed inset-0 bg-gray-900 bg-opacity-50 flex justify-center items-center z-50">
         <div className="bg-white p-4 rounded-lg shadow-lg w-1/2 lg:w-1/3">
+          <button onClick={handleCancel}>
+            <HiMiniXMark size={35} className="icon" />
+          </button>
           <StepIndicator currentStep={currentStep} />
           <input
             type="text"

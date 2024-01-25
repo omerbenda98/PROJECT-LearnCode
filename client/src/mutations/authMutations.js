@@ -11,9 +11,12 @@ const REGISTER = gql`
 `;
 
 const LOGIN = gql`
-  mutation DeleteUser($id: ID!) {
-    deleteUser(id: $id) {
-      id
+  mutation login($email: String!, $password: String!) {
+    login(email: $email, password: $password) {
+      userId
+      token
+      tokenExpiration
+      role
     }
   }
 `;

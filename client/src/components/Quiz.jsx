@@ -4,7 +4,7 @@ const Quiz = ({ quiz }) => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [score, setScore] = useState(0);
   const [quizStarted, setQuizStarted] = useState(false);
-  const [quizCompleted, setQuizCompleted] = useState(false); // New state for tracking quiz completion
+  const [quizCompleted, setQuizCompleted] = useState(false);
 
   const handleAnswer = (selectedOption) => {
     const currentQuestion = quiz.questions[currentQuestionIndex];
@@ -16,7 +16,7 @@ const Quiz = ({ quiz }) => {
     if (nextQuestionIndex < quiz.questions.length) {
       setCurrentQuestionIndex(nextQuestionIndex);
     } else {
-      setQuizCompleted(true); // Set quiz as completed
+      setQuizCompleted(true);
     }
   };
 

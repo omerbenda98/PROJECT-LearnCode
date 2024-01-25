@@ -2,7 +2,6 @@ const {
   GraphQLInputObjectType,
   GraphQLString,
   GraphQLList,
-  GraphQLObjectType,
 } = require("graphql");
 
 const QuestionInputType = new GraphQLInputObjectType({
@@ -18,7 +17,6 @@ const QuizInputType = new GraphQLInputObjectType({
   name: "QuizInput",
   fields: {
     questions: { type: new GraphQLList(QuestionInputType) },
-    // Add other quiz fields if needed
   },
 });
 
@@ -28,7 +26,6 @@ const LessonInputType = new GraphQLInputObjectType({
     title: { type: GraphQLString },
     content: { type: GraphQLString },
     quiz: { type: QuizInputType },
-    // You can include other necessary fields here
   },
 });
 

@@ -1,12 +1,11 @@
-const { GraphQLObjectType, GraphQLString, GraphQLSchema } = require("graphql");
+const { GraphQLString } = require("graphql");
 const { AuthDataType } = require("../types/AuthType");
-const User = require("../models/User"); // Replace with your actual User model path
+const User = require("../models/User");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { RoleType } = require("../types/UserType");
 
-// Function to handle login logic
-async function loginUser(email, password, role) {
+async function loginUser(email, password) {
   const user = await User.findOne({ email });
   if (!user) {
     throw new Error("User does not exist!");
@@ -22,7 +21,7 @@ async function loginUser(email, password, role) {
     process.env.JWT_SECRET,
     { expiresIn: "1h" }
   );
-  console.log(token);
+
   return { userId: user.id, token: token, tokenExpiration: 1 };
 }
 
@@ -56,8 +55,7 @@ const authResolvers = {
           });
           await newUser.save();
 
-          // Use the loginUser function after successful registration
-          return loginUser(args.email, args.password, args.role);
+          return loginUser(args.email, args.password);
         } catch (error) {
           throw new Error(error.message);
         }

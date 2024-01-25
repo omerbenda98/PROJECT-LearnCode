@@ -1,16 +1,15 @@
 import { useState } from "react";
 import { useMutation, useQuery } from "@apollo/client";
-import { GET_COURSES } from "../queries/courseQueries"; // Updated to course queries
+import { GET_COURSES } from "../queries/courseQueries";
 import { GET_LESSONS_BY_COURSE } from "../queries/lessonsQueries";
-import { UPDATE_COURSE } from "../mutations/courseMutations"; // Updated to course mutations
+import { UPDATE_COURSE } from "../mutations/courseMutations";
 
 export default function EditCourseForm({ course }) {
   const [title, setTitle] = useState(course.title);
   const [description, setDescription] = useState(course.description);
   const [difficulty, setDifficulty] = useState(course.difficulty);
-  const [topics, setTopics] = useState(course.topics.join(", "));
+  const [topic, setTopic] = useState(course.topic);
   const [lessons, setLessons] = useState(course.lessons);
-  console.log(lessons);
 
   const {
     loading: lessonsLoading,
@@ -19,7 +18,6 @@ export default function EditCourseForm({ course }) {
   } = useQuery(GET_LESSONS_BY_COURSE, {
     variables: { courseId: course.id },
   });
-  console.log(lessonsData);
 
   const [updateCourse] = useMutation(UPDATE_COURSE, {
     variables: {
@@ -27,7 +25,7 @@ export default function EditCourseForm({ course }) {
       title,
       description,
       difficulty,
-      topics: topics.split(",").map((topic) => topic.trim()),
+      topic,
     },
     refetchQueries: [{ query: GET_COURSES }],
   });
@@ -39,14 +37,6 @@ export default function EditCourseForm({ course }) {
       return alert("Please fill out all fields");
     }
 
-    // Parsing topics from string to array of strings
-    const topicsArray = topics.split(",").map((topic) => topic.trim());
-    console.log("course.id = ", course.id);
-    console.log("title = ", title);
-    console.log("description = ", description);
-    console.log("difficulty = ", difficulty);
-    console.log("topicsArray = ", topicsArray);
-    // console.log("lessons = ", lessons);
     // Calling the updateCourse mutation with required variables
     updateCourse({
       variables: {
@@ -54,7 +44,7 @@ export default function EditCourseForm({ course }) {
         title,
         description,
         difficulty,
-        topics: topicsArray,
+        topic,
         // lessons,
       },
     })
@@ -114,9 +104,9 @@ export default function EditCourseForm({ course }) {
           <input
             type="text"
             className="form-control"
-            id="topics"
-            value={topics}
-            onChange={(e) => setTopics(e.target.value)}
+            id="topic"
+            value={topic}
+            onChange={(e) => setTopic(e.target.value)}
           />
         </div>
         <h4>Lessons</h4>

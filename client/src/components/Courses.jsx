@@ -1,21 +1,19 @@
 import Spinner from "./Spinner";
 import { useQuery } from "@apollo/client";
-import CourseCard from "./CourseCard";
 import { GET_COURSES } from "../queries/courseQueries";
-import { BouncyCardsFeatures } from "./BouncyCardsFeatures";
+
 import SquishyCard from "./SquishyCard";
 
 export default function Courses() {
   const { loading, error, data } = useQuery(GET_COURSES);
 
   if (loading) return <Spinner />;
-  if (error) return <p>Something Went Wrong1</p>;
+  if (error) return <p>Something Went Wrong!</p>;
 
   return (
     <>
-      <BouncyCardsFeatures />
       {data.courses.length > 0 ? (
-        <div className=" mt-4">
+        <div className="mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {data.courses.map((course) => (
             <SquishyCard key={course.id} course={course} />
           ))}

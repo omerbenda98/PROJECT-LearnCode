@@ -7,7 +7,11 @@ const courseSchema = new mongoose.Schema({
   },
   description: String,
   difficulty: String,
-  topics: [String],
+  topic: {
+    type: String,
+    enum: ["HTML", "CSS", "JavaScript", "SQL", "React", "NodeJS"],
+    default: "HTML",
+  },
   lessons: [
     {
       type: mongoose.Schema.Types.ObjectId,

@@ -1,15 +1,11 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";
-import {
-  SiFramer,
-  SiTailwindcss,
-  SiReact,
-  SiJavascript,
-  SiCss3,
-} from "react-icons/si";
+import { SiFramer, SiTailwindcss, SiReact, SiCss3 } from "react-icons/si";
 import { RiJavascriptLine } from "react-icons/ri";
 import EncryptedButton from "./EncryptedButton";
 import { useNavigate } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
+import AddCourseModal from "./AddCourseModal";
 
 const IconSideNav = () => {
   return (
@@ -27,6 +23,14 @@ const SideNav = () => {
   const [selected, setSelected] = useState(0);
   const navigate = useNavigate();
 
+  const token = localStorage.getItem("token");
+  const user = token ? jwtDecode(token) : null;
+
+  const handleLogoutClick = () => {
+    localStorage.removeItem("token");
+    navigate("/");
+  };
+
   const handleLoginClick = () => {
     navigate("/login");
   };
@@ -36,9 +40,7 @@ const SideNav = () => {
   };
 
   return (
-    // NOTE: In prod, you'd likely set height to h-screen and fix to the viewport
     <nav className="h-[500px] w-100 h-25 sticky top-0 z-10 bg-slate-950 p-4 flex justify-between items-center">
-      {/* Temp logo from https://logoipsum.com/ */}
       <div className="flex flex-row gap-2">
         <NavItem selected={selected === 0} id={0} setSelected={setSelected}>
           <SiTailwindcss className="bright-icon" />
@@ -57,8 +59,23 @@ const SideNav = () => {
         </NavItem>
       </div>
       <div className="flex flex-row gap-2">
-        <EncryptedButton text="LOGIN" onClick={handleLoginClick} />
-        <EncryptedButton text="REGISTER" onClick={handleRegisterClick} />
+        {user ? (
+          <>
+            {user.role === "ADMIN" && (
+              <>
+                <AddCourseModal />
+                <EncryptedButton text="COURSES" />
+              </>
+            )}
+            {user.role === "SUBSCRIBED" && <EncryptedButton text="COURSES" />}
+            <EncryptedButton text="LOGOUT" onClick={handleLogoutClick} />
+          </>
+        ) : (
+          <>
+            <EncryptedButton text="LOGIN" onClick={handleLoginClick} />
+            <EncryptedButton text="REGISTER" onClick={handleRegisterClick} />
+          </>
+        )}
       </div>
     </nav>
   );

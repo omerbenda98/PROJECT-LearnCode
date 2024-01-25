@@ -9,11 +9,9 @@ require("dotenv").config();
 const userResolvers = {
   Query: {
     users: () => {
-      // Return all lessons
       return User.find();
     },
     user: (parent, { id }) => {
-      // Return a single lesson by ID
       return User.findById(id);
     },
   },
@@ -27,8 +25,8 @@ const userResolvers = {
       },
       async resolve(parent, args) {
         try {
-          const hashedPassword = await bcrypt.hash(args.password, 10); // 10 is the salt rounds
-          // Create a new lesson
+          const hashedPassword = await bcrypt.hash(args.password, 10);
+
           const newUser = new User({
             email: args.email,
             password: hashedPassword,
@@ -42,34 +40,7 @@ const userResolvers = {
         }
       },
     },
-    // Other mutations like updateLesson, deleteLesson, etc.
   },
-  // login: {
-  //   type: AuthDataType,
-  //   args: {
-  //     email: { type: GraphQLString },
-  //     password: { type: GraphQLString },
-  //   },
-  //   resolve: async (parent, { email, password }) => {
-  //     const user = await User.findOne({ email });
-  //     if (!user) {
-  //       throw new Error("User does not exist!");
-  //     }
-
-  //     const isEqual = await bcrypt.compare(password, user.password);
-  //     if (!isEqual) {
-  //       throw new Error("Password is incorrect!");
-  //     }
-
-  //     const token = jwt.sign(
-  //       { userId: user.id, email: user.email },
-  //       jwtSecret, // Replace with a real secret key
-  //       { expiresIn: "1h" }
-  //     );
-
-  //     return { userId: user.id, token: token, tokenExpiration: 1 };
-  //   },
-  // },
 };
 
 module.exports = userResolvers;

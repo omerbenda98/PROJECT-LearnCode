@@ -1,24 +1,23 @@
 import { useState } from "react";
 
-export const useForm = (callback, initialState = {}) => {
+export const useForm = (initialState = {}) => {
   const [values, setValues] = useState(initialState);
 
   const onChange = (event) => {
-    if (event.target.type === "checkbox") {
-      setValues({
-        ...values,
-        [event.target.name]: event.target.checked ? "SUBSCRIBED" : "NORMAL",
-      });
-    } else {
-      setValues({ ...values, [event.target.name]: event.target.value });
-    }
-
-    console.log(values);
+    setValues({
+      ...values,
+      [event.target.name]:
+        event.target.type === "checkbox"
+          ? event.target.checked
+            ? true
+            : false
+          : event.target.value,
+    });
   };
 
-  const onSubmit = (event) => {
+  const onSubmit = (event, callback) => {
     event.preventDefault();
-    callback();
+    callback(values);
   };
 
   return {

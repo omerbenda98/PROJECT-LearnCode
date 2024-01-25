@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { FaBook } from "react-icons/fa";
 import { useMutation } from "@apollo/client";
 import { ADD_COURSE } from "../mutations/courseMutations";
@@ -9,26 +9,20 @@ import StepIndicator from "./StepIndicator";
 import { GET_LESSONS } from "../queries/lessonsQueries";
 import { ADD_LESSON } from "../mutations/lessonMutations";
 import { useNavigate } from "react-router-dom";
+import { HiMiniXMark } from "react-icons/hi2";
 
 export default function AddCourseModal() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [difficulty, setDifficulty] = useState("Beginner");
-  const [topics, setTopics] = useState("");
-  const [lessons, setLessons] = useState([]);
+  const [topic, setTopic] = useState("");
   const [lessonsIds, setLessonsIds] = useState([]);
-  const [showLessonForm, setShowLessonForm] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
   const [quiz, setQuiz] = useState(null);
-  const [courseFinalData, setCourseFinalData] = useState({});
-  const [lessonFinalData, setLessonFinalData] = useState({});
   const [lessonTitle, setLessonTitle] = useState("");
   const [lessonContent, setLessonContent] = useState("");
   const navigate = useNavigate();
 
-  // ... other steps data ...
-
-  // GraphQL Mutations
   const [addLesson] = useMutation(ADD_LESSON, {
     variables: {
       title: lessonTitle,
@@ -54,7 +48,7 @@ export default function AddCourseModal() {
       title,
       description,
       difficulty,
-      topics: topics.split(",").map((topic) => topic.trim()),
+      topic,
       lessons: lessonsIds,
     },
     update(cache, { data: { addCourse } }) {
@@ -71,58 +65,35 @@ export default function AddCourseModal() {
     },
   });
 
-  const saveAllLessons = async () => {
+  const saveLesson = async () => {
     const savedLessonId = [];
 
     try {
       const savedLesson = await addLesson({
         title: lessonTitle,
         content: lessonContent,
-        quiz,
+        quiz: { questions: quiz },
       });
-      console.log(savedLesson.data.addLesson.id);
-      savedLessonId.push(savedLesson.data.addLesson.id); // Assuming the saved lesson object has an ID
+
+      savedLessonId.push(savedLesson.data.addLesson.id);
     } catch (error) {
       console.error("Error saving lesson:", error);
-      // Handle error, possibly abort the whole operation
     }
 
     return savedLessonId;
   };
 
-  const saveLesson = (lessonId) => {
-    setLessonsIds([...lessonsIds, lessonId]);
-    setShowLessonForm(false);
-  };
-  const handleCancelLesson = () => {
-    // Logic to close the AddLessonModal
-    setShowLessonForm(false);
-    // Reset other states or perform additional cleanup if necessary
+  const handleCancel = () => {
+    setCurrentStep(0);
   };
   const handleSavedLessons = (lesson) => {
-    console.log(lesson);
     setLessonTitle(lesson.title);
     setLessonContent(lesson.content);
     setCurrentStep(currentStep + 1);
   };
   const goToSecondStep = () => {
-    setCourseFinalData({
-      title,
-      description,
-      difficulty,
-      topics: topics.split(",").map((topic) => topic.trim()),
-    });
     setCurrentStep(currentStep + 1);
   };
-
-  // const goToFinalStep = () => {
-  //   console.log(lessonFinalData);
-  //   setLessonTitle({
-  //     title: lessonFinalData.title,
-  //     content: lessonFinalData.content,
-  //   });
-  //   setCurrentStep(currentStep + 1);
-  // };
 
   const goToPreviousStep = () => {
     setCurrentStep(currentStep - 1);
@@ -130,23 +101,24 @@ export default function AddCourseModal() {
 
   const handleOnSubmit = async (e) => {
     try {
-      const lessonId = await saveAllLessons();
+      const lessonId = await saveLesson();
       await addCourse({
         variables: {
           title: title,
           description: description,
           difficulty: difficulty,
-          topics: topics,
+          topic: topic,
           lessons: lessonId,
         },
       });
-      // Reset form fields
+
       setTitle("");
       setDescription("");
       setDifficulty("Beginner");
-      setTopics("");
+      setTopic("");
       setLessonsIds([]);
       navigate("/");
+      setCurrentStep(0);
     } catch (error) {
       console.error("Error adding course:", error);
     }
@@ -154,10 +126,6 @@ export default function AddCourseModal() {
   const addQuiz = (quiz) => {
     setQuiz(quiz);
   };
-  // useEffect(() => {
-  //   console.log(lessonTitle);
-  //   console.log(lessonContent);
-  // }, [lessonTitle, lessonContent]);
 
   return (
     <>
@@ -169,14 +137,20 @@ export default function AddCourseModal() {
         <FaBook className="icon mr-2" />
         <span>New Course</span>
       </button>
+
       {currentStep === 1 && (
         <>
           <div className="fixed inset-0 bg-gray-900 bg-opacity-50 flex justify-center items-center ">
             <div className="bg-white p-8 rounded-lg shadow-xl max-w-lg mx-auto w-50">
+              <button onClick={() => setCurrentStep(0)}>
+                <HiMiniXMark size={35} className="icon" />
+              </button>
               <StepIndicator currentStep={currentStep} />
+
               <h5 className="text-lg font-semibold text-gray-700 mb-4">
                 New Course
               </h5>
+
               <div className="space-y-4">
                 <div>
                   <label className="block text-gray-700 font-medium mb-2">
@@ -219,24 +193,24 @@ export default function AddCourseModal() {
                 </div>
                 <div>
                   <label className="block text-gray-700 font-medium mb-2">
-                    Topics (comma-separated)
+                    Topic
                   </label>
-                  <input
-                    type="text"
+                  <select
+                    id="topic"
                     className="w-full border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    id="topics"
-                    value={topics}
-                    onChange={(e) => setTopics(e.target.value)}
-                    placeholder="e.g., HTML, CSS, JavaScript"
-                  />
+                    value={topic}
+                    onChange={(e) => setTopic(e.target.value)}
+                  >
+                    <option value="">Select a topic</option>
+                    <option value="HTML">HTML</option>
+                    <option value="CSS">CSS</option>
+                    <option value="JavaScript">JavaScript</option>
+                    <option value="SQL">SQL</option>
+                    <option value="React">React</option>
+                    <option value="Node.js">Node.js</option>
+                  </select>
                 </div>
-                {showLessonForm && (
-                  <div className="fixed inset-0 bg-gray-500 bg-opacity-50 flex justify-center items-center">
-                    <div className="bg-white p-4 rounded-lg shadow-lg">
-                      {/* Modal content here */}
-                    </div>
-                  </div>
-                )}
+
                 <div className="flex justify-end space-x-2">
                   <button
                     type="button"
@@ -257,7 +231,7 @@ export default function AddCourseModal() {
             onLessonPreview={goToPreviousStep}
             onSaveLessonState={handleSavedLessons}
             currentStep={currentStep}
-            onCancel={handleCancelLesson}
+            onCancel={handleCancel}
             lessonTitleData={lessonTitle}
             lessonContentData={lessonContent}
           />
@@ -270,6 +244,7 @@ export default function AddCourseModal() {
             currentStep={currentStep}
             onQuizPrev={goToPreviousStep}
             onSubmit={handleOnSubmit}
+            onCancel={handleCancel}
           />
         </>
       )}

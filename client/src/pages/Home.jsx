@@ -1,14 +1,11 @@
 import Courses from "../components/Courses";
-import AddCourseModal from "../components/AddCourseModal";
+import { BouncyCardsFeatures } from "../components/BouncyCardsFeatures";
 
 export default function Home() {
   return (
     <>
+      <BouncyCardsFeatures />
       <Courses />
-      <div className="d-flex gap-3 mb-4">
-        <AddCourseModal />
-      </div>
-      <hr />
     </>
   );
 }

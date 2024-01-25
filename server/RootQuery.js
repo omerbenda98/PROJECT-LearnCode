@@ -7,7 +7,6 @@ const {
 const { CourseType } = require("./types/CourseType");
 const LessonType = require("./types/LessonType");
 const { UserType } = require("./types/UserType");
-const { QuizType } = require("./types/QuizType");
 const courseMutations = require("./resolvers/courseResolvers");
 const lessonResolvers = require("./resolvers/lessonResolvers");
 const userResolvers = require("./resolvers/userResolvers");
@@ -41,7 +40,6 @@ const RootQueryType = new GraphQLObjectType({
     // user: {
     //   type: UserType,
     // },
-    // Additional fields as needed...
   },
   users: {
     type: new GraphQLList(UserType),
