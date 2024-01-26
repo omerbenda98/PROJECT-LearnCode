@@ -2,6 +2,7 @@ const {
   GraphQLInputObjectType,
   GraphQLString,
   GraphQLList,
+  GraphQLBoolean,
 } = require("graphql");
 
 const QuestionInputType = new GraphQLInputObjectType({
@@ -26,6 +27,7 @@ const LessonInputType = new GraphQLInputObjectType({
     title: { type: GraphQLString },
     content: { type: GraphQLString },
     quiz: { type: QuizInputType },
+    isFree: { type: GraphQLBoolean },
   },
 });
 

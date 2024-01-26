@@ -15,6 +15,10 @@ const lessonSchema = new mongoose.Schema({
       },
     ],
   },
+  isFree: {
+    type: Boolean,
+    required: true,
+  },
 });
 
 module.exports = mongoose.model("Lesson", lessonSchema);

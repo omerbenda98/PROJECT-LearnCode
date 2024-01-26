@@ -6,6 +6,7 @@ const GET_LESSONS = gql`
       id
       title
       content
+      isFree
       quiz {
         questions {
           text
@@ -23,6 +24,7 @@ const GET_LESSON = gql`
       id
       title
       content
+      isFree
       quiz {
         questions {
           text
@@ -40,6 +42,7 @@ const GET_LESSONS_BY_COURSE = gql`
       id
       title
       content
+      isFree
       quiz {
         questions {
           text

@@ -4,6 +4,7 @@ const {
   GraphQLID,
   GraphQLList,
   GraphQLNonNull,
+  GraphQLBoolean,
 } = require("graphql");
 
 const QuestionType = new GraphQLObjectType({
@@ -29,6 +30,7 @@ const LessonType = new GraphQLObjectType({
     title: { type: GraphQLString },
     content: { type: GraphQLString },
     quiz: { type: QuizType },
+    isFree: { type: GraphQLBoolean },
   }),
 });
 

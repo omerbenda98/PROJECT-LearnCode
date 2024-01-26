@@ -19,7 +19,7 @@ const ParticleRing = () => {
         <PointCircle />
       </Canvas>
 
-      <h1 className="absolute top-[50%] left-[50%] -translate-x-[50%] -translate-y-[50%] text-slate-200 font-medium text-2xl md:text-6xl pointer-events-none">
+      <h1 className="absolute top-[50%] left-[50%] -translate-x-[50%] -translate-y-[50%] text-slate-200 font-medium text-2xl md:text-6xl pointer-events-none neon">
         <p>Welcome to LearnCode</p>
         <p className="text-2xl">
           explore and sharpen your skills at html,css,js, and more

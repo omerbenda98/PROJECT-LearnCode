@@ -9,12 +9,19 @@ export default function Courses() {
 
   if (loading) return <Spinner />;
   if (error) return <p>Something Went Wrong!</p>;
+  const getRandomCourses = (courses) => {
+    const shuffled = [...courses].sort(() => 0.5 - Math.random());
+    return shuffled.slice(0, 5);
+  };
+
+  const randomCourses =
+    data.courses.length > 0 ? getRandomCourses(data.courses) : [];
 
   return (
     <>
-      {data.courses.length > 0 ? (
-        <div className="mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {data.courses.map((course) => (
+      {randomCourses.length > 0 ? (
+        <div className="courses-container">
+          {randomCourses.map((course) => (
             <SquishyCard key={course.id} course={course} />
           ))}
         </div>

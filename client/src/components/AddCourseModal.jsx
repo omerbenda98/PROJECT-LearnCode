@@ -21,6 +21,7 @@ export default function AddCourseModal() {
   const [quiz, setQuiz] = useState(null);
   const [lessonTitle, setLessonTitle] = useState("");
   const [lessonContent, setLessonContent] = useState("");
+  const [isLessonFree, setIsLessonFree] = useState(false);
   const navigate = useNavigate();
 
   const [addLesson] = useMutation(ADD_LESSON, {
@@ -73,6 +74,7 @@ export default function AddCourseModal() {
         title: lessonTitle,
         content: lessonContent,
         quiz: { questions: quiz },
+        isFree: isLessonFree,
       });
 
       savedLessonId.push(savedLesson.data.addLesson.id);
@@ -89,6 +91,7 @@ export default function AddCourseModal() {
   const handleSavedLessons = (lesson) => {
     setLessonTitle(lesson.title);
     setLessonContent(lesson.content);
+    setIsLessonFree(lesson.isFree);
     setCurrentStep(currentStep + 1);
   };
   const goToSecondStep = () => {

@@ -1,10 +1,4 @@
-const {
-  GraphQLList,
-  GraphQLNonNull,
-  GraphQLID,
-  GraphQLString,
-  GraphQLObjectType,
-} = require("graphql");
+const { GraphQLNonNull, GraphQLString, GraphQLBoolean } = require("graphql");
 
 const LessonType = require("../types/LessonType");
 const { QuizInputType } = require("../types/inputTypes");
@@ -36,13 +30,16 @@ const lessonResolvers = {
         title: { type: GraphQLNonNull(GraphQLString) },
         content: { type: GraphQLString },
         quiz: { type: QuizInputType },
+        isFree: { type: GraphQLBoolean },
       },
       async resolve(parent, args) {
         try {
+          console.log(args);
           const newLesson = new Lesson({
             title: args.title,
             content: args.content,
             quiz: args.quiz,
+            isFree: args.isFree,
           });
           const savedLesson = await newLesson.save();
           return savedLesson;

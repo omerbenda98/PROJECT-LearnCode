@@ -3,7 +3,7 @@ import { useState } from "react";
 import { SiFramer, SiTailwindcss, SiReact, SiCss3 } from "react-icons/si";
 import { RiJavascriptLine } from "react-icons/ri";
 import EncryptedButton from "./EncryptedButton";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import AddCourseModal from "./AddCourseModal";
 
@@ -38,6 +38,10 @@ const SideNav = () => {
   const handleRegisterClick = () => {
     navigate("/register");
   };
+  const handleCoursesClick = () => {
+    console.log("gere");
+    navigate("/coursesPage");
+  };
 
   return (
     <nav className="h-[500px] w-100 h-25 sticky top-0 z-10 bg-slate-950 p-4 flex justify-between items-center">
@@ -64,10 +68,12 @@ const SideNav = () => {
             {user.role === "ADMIN" && (
               <>
                 <AddCourseModal />
-                <EncryptedButton text="COURSES" />
+                <EncryptedButton text="COURSES" onClick={handleCoursesClick} />
               </>
             )}
-            {user.role === "SUBSCRIBED" && <EncryptedButton text="COURSES" />}
+            {user.role === "SUBSCRIBED" && (
+              <EncryptedButton text="COURSES" onClick={handleCoursesClick} />
+            )}
             <EncryptedButton text="LOGOUT" onClick={handleLogoutClick} />
           </>
         ) : (

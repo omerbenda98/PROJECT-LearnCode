@@ -15,6 +15,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import client from "./apolloClient";
 import { AuthProvider } from "./context/authContext";
+import CoursesPage from "./pages/CoursesPage";
 
 const cache = new InMemoryCache({
   typePolicies: {
@@ -50,6 +51,7 @@ function App() {
                 <Route path="/about" element={<About />} />
                 <Route path="/register" element={<Register />} />
                 <Route path="/login" element={<Login />} />
+                <Route path="/coursesPage" element={<CoursesPage />} />
                 <Route path="/courses/:id" element={<Course />}>
                   <Route path="lessons/:lessonId" element={<Lesson />} />
                 </Route>

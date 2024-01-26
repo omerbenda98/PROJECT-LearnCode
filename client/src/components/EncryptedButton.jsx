@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 
 const EncryptedButton = ({ text, onClick }) => {
   return (
-    <div className="grid min-h-[100px] place-content-center bg-slate-900 p-4 ">
+    <div className="grid  place-content-center bg-slate-900  ">
       <EncryptButton text={text} onClick={onClick} />
     </div>
   );

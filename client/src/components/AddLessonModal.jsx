@@ -12,6 +12,7 @@ export default function AddLessonModal({
 }) {
   const [lessonTitle, setLessonTitle] = useState(lessonTitleData || "");
   const [lessonContent, setLessonContent] = useState(lessonContentData || "");
+  const [isLessonFree, setIsLessonFree] = useState(false);
 
   const handleCancel = () => {
     onCancel();
@@ -21,11 +22,12 @@ export default function AddLessonModal({
     const lesson = {
       title: lessonTitle,
       content: lessonContent,
+      isFree: isLessonFree,
     };
 
     onSaveLessonState(lesson);
     setLessonTitle(lesson.title);
-    setLessonTitle(lesson.content);
+    setLessonContent(lesson.content);
   };
 
   return (
@@ -55,6 +57,26 @@ export default function AddLessonModal({
                 rows="3"
               ></textarea>
             </div>
+            <div className="flex items-start">
+              <div className="flex items-center h-5">
+                <input
+                  id="isFreeCheckbox"
+                  type="checkbox"
+                  className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-primary-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-primary-600 dark:ring-offset-gray-800"
+                  checked={isLessonFree}
+                  onChange={(e) => setIsLessonFree(e.target.checked)}
+                />
+              </div>
+              <div className="ml-3 text-sm">
+                <label
+                  htmlFor="isFreeCheckbox"
+                  className="font-light text-gray-500 dark:text-gray-300"
+                >
+                  Make lesson Free
+                </label>
+              </div>
+            </div>
+            // ... rest of your component
           </div>
           <div className="flex justify-center space-x-2 mt-4">
             <button
