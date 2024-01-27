@@ -5,7 +5,10 @@ const GET_LESSONS = gql`
     lessons {
       id
       title
-      content
+      contentSections {
+        type
+        data
+      }
       isFree
       quiz {
         questions {
@@ -23,7 +26,10 @@ const GET_LESSON = gql`
     lesson(id: $id) {
       id
       title
-      content
+      contentSections {
+        type
+        data
+      }
       isFree
       quiz {
         questions {
@@ -41,7 +47,10 @@ const GET_LESSONS_BY_COURSE = gql`
     lessonsByCourse(courseId: $courseId) {
       id
       title
-      content
+      contentSections {
+        type
+        data
+      }
       isFree
       quiz {
         questions {

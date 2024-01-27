@@ -3,8 +3,9 @@ const {
   GraphQLString,
   GraphQLID,
   GraphQLList,
-  GraphQLNonNull,
+  GraphQLEnumType,
   GraphQLBoolean,
+  GraphQLNonNull,
 } = require("graphql");
 
 const QuestionType = new GraphQLObjectType({
@@ -22,16 +23,35 @@ const QuizType = new GraphQLObjectType({
     questions: { type: new GraphQLList(QuestionType) },
   }),
 });
+const SectionTypeEnum = new GraphQLEnumType({
+  name: "SectionType",
+  values: {
+    INTRODUCTION: { value: "introduction" },
+    THEORY: { value: "theory" },
+    EXAMPLE: { value: "example" },
+    SUMMARY: { value: "summary" },
+    // Add other section types as needed
+  },
+});
+
+const ContentSectionType = new GraphQLObjectType({
+  name: "ContentSection",
+  fields: () => ({
+    type: { type: SectionTypeEnum }, // Using enum here
+    data: { type: GraphQLString },
+  }),
+});
 
 const LessonType = new GraphQLObjectType({
   name: "Lesson",
   fields: () => ({
     id: { type: GraphQLID },
     title: { type: GraphQLString },
-    content: { type: GraphQLString },
+    contentSections: {
+      type: new GraphQLList(new GraphQLNonNull(ContentSectionType)),
+    },
     quiz: { type: QuizType },
     isFree: { type: GraphQLBoolean },
   }),
 });
-
 module.exports = LessonType;

@@ -1,7 +1,13 @@
-const { GraphQLNonNull, GraphQLString, GraphQLBoolean } = require("graphql");
+const {
+  GraphQLNonNull,
+  GraphQLString,
+  GraphQLBoolean,
+  GraphQLList,
+} = require("graphql");
 
 const LessonType = require("../types/LessonType");
 const { QuizInputType } = require("../types/inputTypes");
+const { ContentSectionInputType } = require("../types/inputTypes");
 const Course = require("../models/Course");
 const Lesson = require("../models/Lesson");
 
@@ -28,16 +34,17 @@ const lessonResolvers = {
       type: LessonType,
       args: {
         title: { type: GraphQLNonNull(GraphQLString) },
-        content: { type: GraphQLString },
+        contentSections: {
+          type: new GraphQLList(new GraphQLNonNull(ContentSectionInputType)),
+        },
         quiz: { type: QuizInputType },
         isFree: { type: GraphQLBoolean },
       },
       async resolve(parent, args) {
         try {
-          console.log(args);
           const newLesson = new Lesson({
             title: args.title,
-            content: args.content,
+            contentSections: args.contentSections,
             quiz: args.quiz,
             isFree: args.isFree,
           });

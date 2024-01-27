@@ -3,14 +3,22 @@ import { gql } from "@apollo/client";
 const ADD_LESSON = gql`
   mutation AddLesson(
     $title: String!
-    $content: String
+    $contentSections: [ContentSectionInput!]!
     $quiz: QuizInput!
     $isFree: Boolean!
   ) {
-    addLesson(title: $title, content: $content, quiz: $quiz, isFree: $isFree) {
+    addLesson(
+      title: $title
+      contentSections: $contentSections
+      quiz: $quiz
+      isFree: $isFree
+    ) {
       id
       title
-      content
+      contentSections {
+        type
+        data
+      }
       isFree
       quiz {
         questions {
@@ -35,20 +43,23 @@ const UPDATE_LESSON = gql`
   mutation UpdateLesson(
     $id: ID!
     $title: String
-    $content: String
-    $isFree: Boolean!
+    $contentSections: [ContentSectionInput!]!
     $quiz: QuizInput!
+    $isFree: Boolean!
   ) {
     updateLesson(
       id: $id
       title: $title
-      content: $content
+      contentSections: $contentSections
       quiz: $quiz
       isFree: $isFree
     ) {
       id
       title
-      content
+      contentSections {
+        type
+        data
+      }
       isFree
       quiz {
         questions {

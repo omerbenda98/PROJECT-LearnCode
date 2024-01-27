@@ -1,11 +1,23 @@
 const mongoose = require("mongoose");
 
+const contentSectionSchema = new mongoose.Schema({
+  type: {
+    type: String,
+    enum: ["introduction", "theory", "example", "summary"],
+    required: true,
+  },
+  data: {
+    type: String,
+    required: true,
+  },
+});
+
 const lessonSchema = new mongoose.Schema({
   title: {
     type: String,
     required: true,
   },
-  content: String,
+  contentSections: [contentSectionSchema],
   quiz: {
     questions: [
       {

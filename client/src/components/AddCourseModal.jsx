@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaBook } from "react-icons/fa";
 import { useMutation } from "@apollo/client";
 import { ADD_COURSE } from "../mutations/courseMutations";
@@ -20,15 +20,17 @@ export default function AddCourseModal() {
   const [currentStep, setCurrentStep] = useState(0);
   const [quiz, setQuiz] = useState(null);
   const [lessonTitle, setLessonTitle] = useState("");
-  const [lessonContent, setLessonContent] = useState("");
+  const [lessonContent, setLessonContent] = useState([]);
   const [isLessonFree, setIsLessonFree] = useState(false);
+
   const navigate = useNavigate();
 
   const [addLesson] = useMutation(ADD_LESSON, {
     variables: {
       title: lessonTitle,
-      content: lessonContent,
+      contentSections: lessonContent,
       quiz: { questions: quiz },
+      isFree: isLessonFree,
     },
     update(cache, { data: { addLesson } }) {
       const data = cache.readQuery({ query: GET_LESSONS });
@@ -72,7 +74,7 @@ export default function AddCourseModal() {
     try {
       const savedLesson = await addLesson({
         title: lessonTitle,
-        content: lessonContent,
+        contentSections: lessonContent,
         quiz: { questions: quiz },
         isFree: isLessonFree,
       });
@@ -90,7 +92,7 @@ export default function AddCourseModal() {
   };
   const handleSavedLessons = (lesson) => {
     setLessonTitle(lesson.title);
-    setLessonContent(lesson.content);
+    setLessonContent(lesson.contentSections);
     setIsLessonFree(lesson.isFree);
     setCurrentStep(currentStep + 1);
   };
@@ -105,6 +107,7 @@ export default function AddCourseModal() {
   const handleOnSubmit = async (e) => {
     try {
       const lessonId = await saveLesson();
+
       await addCourse({
         variables: {
           title: title,
@@ -129,6 +132,10 @@ export default function AddCourseModal() {
   const addQuiz = (quiz) => {
     setQuiz(quiz);
   };
+
+  // useEffect(() => {
+  //   console.log(lessonContent);
+  // }, [lessonContent]);
 
   return (
     <>
@@ -228,19 +235,19 @@ export default function AddCourseModal() {
           </div>
         </>
       )}
-      {currentStep === 2 && (
+      {[2, 3, 4, 5].includes(currentStep) && (
         <>
           <AddLessonModal
             onLessonPreview={goToPreviousStep}
             onSaveLessonState={handleSavedLessons}
             currentStep={currentStep}
             onCancel={handleCancel}
-            lessonTitleData={lessonTitle}
+            lessonData={lessonTitle}
             lessonContentData={lessonContent}
           />
         </>
       )}
-      {currentStep === 3 && (
+      {currentStep === 6 && (
         <>
           <QuizForm
             onAddQuiz={addQuiz}

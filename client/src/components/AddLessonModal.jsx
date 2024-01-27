@@ -6,12 +6,14 @@ export default function AddLessonModal({
   onLessonPreview,
   onSaveLessonState,
   currentStep,
-  lessonTitleData,
-  lessonContentData,
   onCancel,
+  lessonContentData,
 }) {
-  const [lessonTitle, setLessonTitle] = useState(lessonTitleData || "");
-  const [lessonContent, setLessonContent] = useState(lessonContentData || "");
+  const [lessonTitle, setLessonTitle] = useState("");
+  const [introduction, setIntroduction] = useState("");
+  const [theory, setTheory] = useState("");
+  const [example, setExample] = useState("");
+  const [summary, setSummary] = useState("");
   const [isLessonFree, setIsLessonFree] = useState(false);
 
   const handleCancel = () => {
@@ -21,25 +23,28 @@ export default function AddLessonModal({
   const handleLessonNext = () => {
     const lesson = {
       title: lessonTitle,
-      content: lessonContent,
+      contentSections: [
+        { type: "INTRODUCTION", data: introduction },
+        { type: "THEORY", data: theory },
+        { type: "EXAMPLE", data: example },
+        { type: "SUMMARY", data: summary },
+      ],
       isFree: isLessonFree,
     };
 
     onSaveLessonState(lesson);
-    setLessonTitle(lesson.title);
-    setLessonContent(lesson.content);
   };
 
   return (
     <>
       <div className="fixed inset-0 bg-gray-900 bg-opacity-50 flex justify-center items-center">
-        <div className="max-w-lg mx-auto bg-white p-6 rounded-lg shadow-lg w-50">
+        <div className="mx-auto bg-white p-6 rounded-lg shadow-lg w-50">
           <button onClick={handleCancel}>
             <HiMiniXMark size={35} className="icon" />
           </button>
           <StepIndicator currentStep={currentStep} />
           <div className="space-y-4">
-            <div>
+            {currentStep === 2 && (
               <input
                 type="text"
                 className="w-full border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -47,16 +52,46 @@ export default function AddLessonModal({
                 onChange={(e) => setLessonTitle(e.target.value)}
                 placeholder="Lesson Title"
               />
-            </div>
-            <div>
+            )}
+            {currentStep === 2 && (
               <textarea
                 className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                value={lessonContent}
-                onChange={(e) => setLessonContent(e.target.value)}
-                placeholder="Lesson Content"
+                value={introduction}
+                onChange={(e) => setIntroduction(e.target.value)}
+                placeholder="Introduction Content"
                 rows="3"
               ></textarea>
-            </div>
+            )}
+            {currentStep === 3 && (
+              <textarea
+                className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                value={theory}
+                onChange={(e) => setTheory(e.target.value)}
+                placeholder="Theory Content"
+                rows="3"
+              ></textarea>
+            )}
+            {currentStep === 4 && (
+              <textarea
+                className="w-full h-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                value={example}
+                onChange={(e) => setExample(e.target.value)}
+                placeholder="Example Content"
+                rows="3"
+              ></textarea>
+            )}
+            {currentStep === 5 && (
+              <textarea
+                className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                value={summary}
+                onChange={(e) => setSummary(e.target.value)}
+                placeholder="Summary Content"
+                rows="3"
+              ></textarea>
+            )}
+
+            {/* Repeat for Theory, Example, Summary with similar structure */}
+            {/* ... */}
             <div className="flex items-start">
               <div className="flex items-center h-5">
                 <input
@@ -67,16 +102,13 @@ export default function AddLessonModal({
                   onChange={(e) => setIsLessonFree(e.target.checked)}
                 />
               </div>
-              <div className="ml-3 text-sm">
-                <label
-                  htmlFor="isFreeCheckbox"
-                  className="font-light text-gray-500 dark:text-gray-300"
-                >
-                  Make lesson Free
-                </label>
-              </div>
+              <label
+                htmlFor="isFreeCheckbox"
+                className="font-light text-gray-500 dark:text-gray-300"
+              >
+                Make lesson Free
+              </label>
             </div>
-            // ... rest of your component
           </div>
           <div className="flex justify-center space-x-2 mt-4">
             <button

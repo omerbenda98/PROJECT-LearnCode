@@ -3,6 +3,9 @@ const {
   GraphQLString,
   GraphQLList,
   GraphQLBoolean,
+  GraphQLEnumType,
+  GraphQLNonNull,
+  GraphQLID,
 } = require("graphql");
 
 const QuestionInputType = new GraphQLInputObjectType({
@@ -21,14 +24,41 @@ const QuizInputType = new GraphQLInputObjectType({
   },
 });
 
+const SectionInputTypeEnum = new GraphQLEnumType({
+  name: "SectionInputType",
+  values: {
+    INTRODUCTION: { value: "introduction" },
+    THEORY: { value: "theory" },
+    EXAMPLE: { value: "example" },
+    SUMMARY: { value: "summary" },
+    // Add other section types as needed
+  },
+});
+
+const ContentSectionInputType = new GraphQLInputObjectType({
+  name: "ContentSectionInput",
+  fields: {
+    type: { type: SectionInputTypeEnum },
+    data: { type: GraphQLString },
+  },
+});
+
 const LessonInputType = new GraphQLInputObjectType({
   name: "LessonInput",
   fields: {
     title: { type: GraphQLString },
-    content: { type: GraphQLString },
+    contentSections: {
+      type: new GraphQLList(new GraphQLNonNull(ContentSectionInputType)),
+    },
     quiz: { type: QuizInputType },
     isFree: { type: GraphQLBoolean },
   },
 });
 
-module.exports = { LessonInputType, QuizInputType, QuestionInputType };
+module.exports = {
+  LessonInputType,
+  QuizInputType,
+  QuestionInputType,
+  ContentSectionInputType,
+  SectionInputTypeEnum,
+};

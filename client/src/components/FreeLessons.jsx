@@ -11,7 +11,7 @@ export default function FreeLessons() {
 
   if (loading) return <Spinner />;
   if (error) return <p>Something Went Wrong!</p>;
-  console.log(data);
+
   const filteredLessons = data.lessons.filter(
     (lesson) => lesson.isFree === showFreeLessons
   );
