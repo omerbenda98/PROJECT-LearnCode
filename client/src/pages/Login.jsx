@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useMutation } from "@apollo/client";
 import { toast } from "react-toastify";
 import { Link, useNavigate } from "react-router-dom";
@@ -6,8 +6,10 @@ import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/authContext";
 import { useForm } from "../hooks/useForm";
 import { LOGIN } from "../mutations/authMutations";
+import validateLoginSchema from "../validation/loginValidation";
 
 export default function Login() {
+  const [errors, setErrors] = useState({});
   const navigate = useNavigate();
   const { login } = useContext(AuthContext);
 
@@ -35,18 +37,33 @@ export default function Login() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+
     try {
+      const { error } = validateLoginSchema(values);
+
+      if (error) {
+        const formattedErrors = error.details.reduce((acc, currentError) => {
+          acc[currentError.path[0]] = currentError.message.replace(
+            /['"]+/g,
+            ""
+          );
+          return acc;
+        }, {});
+
+        setErrors(formattedErrors);
+        return;
+      } else {
+        setErrors({});
+      }
       await loginUser();
     } catch (error) {
       // Error handling is already managed by onError in useMutation
     }
   };
 
-  useEffect(() => {
-    if (error) {
-      console.error("Login error:", error);
-    }
-  }, [error]);
+  // useEffect(() => {
+  //   console.log(errors);
+  // }, [errors]);
 
   return (
     <>
@@ -58,6 +75,7 @@ export default function Login() {
                 Sign in to your account
               </h1>
               <form
+                noValidate
                 className="space-y-4 md:space-y-6"
                 action="#"
                 onSubmit={handleSubmit}
@@ -78,6 +96,11 @@ export default function Login() {
                     required=""
                     onChange={onChange}
                   />
+                  {errors.email && (
+                    <p className="text-red-500 text-xs italic">
+                      {errors.email}
+                    </p>
+                  )}
                 </div>
                 <div>
                   <label
@@ -95,6 +118,11 @@ export default function Login() {
                     required=""
                     onChange={onChange}
                   />
+                  {errors.password && (
+                    <p className="text-red-500 text-xs italic">
+                      {errors.password}
+                    </p>
+                  )}
                 </div>
 
                 <button

@@ -16,25 +16,8 @@ import "react-toastify/dist/ReactToastify.css";
 import client from "./apolloClient";
 import { AuthProvider } from "./context/authContext";
 import CoursesPage from "./pages/CoursesPage";
-
-const cache = new InMemoryCache({
-  typePolicies: {
-    Query: {
-      fields: {
-        clients: {
-          merge(existing, incoming) {
-            return incoming;
-          },
-        },
-        projects: {
-          merge(existing, incoming) {
-            return incoming;
-          },
-        },
-      },
-    },
-  },
-});
+import ProtectedRoute from "./components/ProtectedRoute";
+import UnauthorizedComponent from "./components/UnauthorizedComponent";
 
 function App() {
   return (
@@ -51,8 +34,26 @@ function App() {
                 <Route path="/about" element={<About />} />
                 <Route path="/register" element={<Register />} />
                 <Route path="/login" element={<Login />} />
-                <Route path="/coursesPage" element={<CoursesPage />} />
-                <Route path="/courses/:id" element={<Course />}>
+                <Route
+                  path="/unauthorized"
+                  element={<UnauthorizedComponent />}
+                />
+                <Route
+                  path="/coursesPage"
+                  element={
+                    <ProtectedRoute allowedRoles={["ADMIN", "SUBSCRIBED"]}>
+                      <CoursesPage />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/courses/:id"
+                  element={
+                    <ProtectedRoute allowedRoles={["ADMIN", "SUBSCRIBED"]}>
+                      <Course />
+                    </ProtectedRoute>
+                  }
+                >
                   <Route path="lessons/:lessonId" element={<Lesson />} />
                 </Route>
                 <Route path="*" element={<NotFound />} />

@@ -4,6 +4,10 @@ const User = require("../models/User");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { RoleType } = require("../types/UserType");
+const {
+  validateRegister,
+  validateLogin,
+} = require("../validation/authValidation");
 
 async function loginUser(email, password) {
   const user = await User.findOne({ email });
@@ -34,6 +38,11 @@ const authResolvers = {
         password: { type: GraphQLString },
       },
       resolve: async (parent, { email, password, role }) => {
+        console.log({ email, password });
+        const validationError = validateLogin({ email, password }); // Assuming validateLogin now returns error instead of sending response
+        if (validationError) {
+          throw new Error(validationError);
+        }
         return loginUser(email, password, role);
       },
     },
@@ -46,6 +55,14 @@ const authResolvers = {
       },
       async resolve(parent, args) {
         try {
+          const validationError = validateRegister(args); // Assuming validateLogin now returns error instead of sending response
+          if (validationError) {
+            throw new Error(validationError);
+          }
+          const existingUser = await User.findOne({ email: args.email });
+          if (existingUser) {
+            throw new Error("Email already exists");
+          }
           const hashedPassword = await bcrypt.hash(args.password, 10);
 
           const newUser = new User({

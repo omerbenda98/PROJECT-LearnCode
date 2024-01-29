@@ -6,19 +6,25 @@ const CoursesPageCard = (course) => {
   const [isOpen, setIsOpen] = useState(false);
   return (
     <div className="px-4 py-64 bg-slate-900 grid place-content-center">
-      <button
+      <div
         onClick={() => setIsOpen(true)}
-        className="bg-gradient-to-r from-violet-600 to-indigo-600 text-white font-medium px-4 py-2 rounded hover:opacity-90 transition-opacity"
+        className="cursor-pointer bg-white rounded-lg shadow-md overflow-hidden transform transition duration-500 hover:scale-105"
       >
-        {course.course.title}
-      </button>
+        <div className="bg-gradient-to-r from-violet-600 to-indigo-600 p-4">
+          <h2 className="text-white text-lg font-bold">
+            {course.course.title}
+          </h2>
+        </div>
+        <div className="p-4">
+          <p className="text-gray-700">{course.course.difficulty}</p>
+        </div>
+      </div>
       <SpringModal isOpen={isOpen} setIsOpen={setIsOpen} course={course} />
     </div>
   );
 };
 
 const SpringModal = ({ isOpen, setIsOpen, course }) => {
-  console.log(course);
   return (
     <AnimatePresence>
       {isOpen && (

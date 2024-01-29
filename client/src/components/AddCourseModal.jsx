@@ -10,6 +10,8 @@ import { GET_LESSONS } from "../queries/lessonsQueries";
 import { ADD_LESSON } from "../mutations/lessonMutations";
 import { useNavigate } from "react-router-dom";
 import { HiMiniXMark } from "react-icons/hi2";
+import validateCourseSchema from "../validation/courseValidation";
+import validateLessonSchema from "../validation/lessonValidation";
 
 export default function AddCourseModal() {
   const [title, setTitle] = useState("");
@@ -21,6 +23,9 @@ export default function AddCourseModal() {
   const [quiz, setQuiz] = useState(null);
   const [lessonTitle, setLessonTitle] = useState("");
   const [lessonContent, setLessonContent] = useState([]);
+  const [lessonErrors, setLessonErrors] = useState({});
+  const [courseErrors, setCourseErrors] = useState({});
+
   const [isLessonFree, setIsLessonFree] = useState(false);
 
   const navigate = useNavigate();
@@ -67,17 +72,34 @@ export default function AddCourseModal() {
       console.error("Error executing addCourse mutation:", error);
     },
   });
+  const transformJoiErrors = (joiError) => {
+    return joiError.details.reduce((acc, error) => {
+      const path = error.path.join("."); // Handles nested paths
+      acc[path] = error.message;
+      return acc;
+    }, {});
+  };
 
   const saveLesson = async () => {
     const savedLessonId = [];
+    const lessonData = {
+      title: lessonTitle,
+      contentSections: lessonContent,
+      quiz: { questions: quiz },
+      isFree: isLessonFree,
+    };
 
+    const { error: lessonValidationError } = validateLessonSchema(lessonData);
+    const transformedJoiErrors = transformJoiErrors(lessonValidationError);
+    if (transformedJoiErrors) {
+      setLessonErrors(transformedJoiErrors);
+      console.log(transformedJoiErrors);
+      return [];
+    } else {
+      setLessonErrors({});
+    }
     try {
-      const savedLesson = await addLesson({
-        title: lessonTitle,
-        contentSections: lessonContent,
-        quiz: { questions: quiz },
-        isFree: isLessonFree,
-      });
+      const savedLesson = await addLesson(lessonData);
 
       savedLessonId.push(savedLesson.data.addLesson.id);
     } catch (error) {
@@ -108,15 +130,24 @@ export default function AddCourseModal() {
     try {
       const lessonId = await saveLesson();
 
-      await addCourse({
-        variables: {
-          title: title,
-          description: description,
-          difficulty: difficulty,
-          topic: topic,
-          lessons: lessonId,
-        },
-      });
+      const courseData = {
+        title,
+        description,
+        difficulty,
+        topic,
+        lessons: lessonId,
+      };
+      const { error: courseValidationError } = validateCourseSchema(courseData);
+      const transformedJoiErrors = transformJoiErrors(courseValidationError);
+      if (transformedJoiErrors) {
+        setCourseErrors(transformedJoiErrors);
+        console.log(transformedJoiErrors);
+        return [];
+      } else {
+        setCourseErrors({});
+      }
+
+      await addCourse(courseData);
 
       setTitle("");
       setDescription("");
@@ -173,6 +204,11 @@ export default function AddCourseModal() {
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
                   />
+                  {courseErrors.title && (
+                    <p className="text-red-500 text-xs italic">
+                      {courseErrors.title}
+                    </p>
+                  )}
                 </div>
                 <div>
                   <label className="block text-gray-700 font-medium mb-2">
@@ -185,6 +221,11 @@ export default function AddCourseModal() {
                     onChange={(e) => setDescription(e.target.value)}
                     rows="3"
                   ></textarea>
+                  {courseErrors.description && (
+                    <p className="text-red-500 text-xs italic">
+                      {courseErrors.description}
+                    </p>
+                  )}
                 </div>
                 <div>
                   <label className="block text-gray-700 font-medium mb-2">
@@ -200,6 +241,11 @@ export default function AddCourseModal() {
                     <option value="Intermediate">Intermediate</option>
                     <option value="Advanced">Advanced</option>
                   </select>
+                  {courseErrors.difficulty && (
+                    <p className="text-red-500 text-xs italic">
+                      {courseErrors.difficulty}
+                    </p>
+                  )}
                 </div>
                 <div>
                   <label className="block text-gray-700 font-medium mb-2">
@@ -219,6 +265,11 @@ export default function AddCourseModal() {
                     <option value="React">React</option>
                     <option value="Node.js">Node.js</option>
                   </select>
+                  {courseErrors.topic && (
+                    <p className="text-red-500 text-xs italic">
+                      {courseErrors.topic}
+                    </p>
+                  )}
                 </div>
 
                 <div className="flex justify-end space-x-2">
@@ -244,6 +295,7 @@ export default function AddCourseModal() {
             onCancel={handleCancel}
             lessonData={lessonTitle}
             lessonContentData={lessonContent}
+            lessonErrors={lessonErrors}
           />
         </>
       )}

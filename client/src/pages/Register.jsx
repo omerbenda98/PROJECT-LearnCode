@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { GET_USERS } from "../queries/userQueries";
 
 import { useMutation } from "@apollo/client";
@@ -8,8 +8,10 @@ import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/authContext";
 import { useForm } from "../hooks/useForm";
 import { REGISTER } from "../mutations/authMutations";
+import validateRegisterSchema from "../validation/registerValidation";
 
 export default function Register() {
+  const [errors, setErrors] = useState({});
   const navigate = useNavigate();
   const { login } = useContext(AuthContext);
 
@@ -20,7 +22,7 @@ export default function Register() {
     role: false,
   };
 
-  const { onChange, onSubmit, values } = useForm(initialState);
+  const { onChange, values } = useForm(initialState);
 
   const [register] = useMutation(REGISTER, {
     variables: {
@@ -31,6 +33,7 @@ export default function Register() {
     onCompleted: (data) => {
       login(data.register);
       navigate("/");
+      toast.success("User created successfully");
     },
     update(cache, { data: { register } }) {
       const data = cache.readQuery({ query: GET_USERS });
@@ -42,22 +45,45 @@ export default function Register() {
       }
     },
     onError(error) {
-      console.error("Error executing register mutation:", error);
-      console.log(error.graphQLErrors);
-      console.log(error.networkError);
-      toast.error("Failed to create user");
+      const emailExistsError = error.graphQLErrors.find(
+        (e) => e.message === "Email already exists"
+      );
+      if (emailExistsError) {
+        setErrors({ ...errors, email: "Email already exists" });
+        toast.error("Email already exists");
+      } else {
+        toast.error("Failed to create user");
+      }
     },
   });
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-
-    if (values.password !== values.confirmPassword) {
-      toast.error("Passwords don't match");
-      return;
-    }
-
+    const { error } = validateRegisterSchema({
+      email: values.email,
+      password: values.password,
+      role: values.role,
+    });
     try {
+      if (values.password !== values.confirmPassword) {
+        toast.error("Passwords don't match");
+        return;
+      }
+      if (error) {
+        const formattedErrors = error.details.reduce((acc, currentError) => {
+          acc[currentError.path[0]] = currentError.message.replace(
+            /['"]+/g,
+            ""
+          );
+          return acc;
+        }, {});
+
+        setErrors(formattedErrors);
+        return;
+      } else {
+        setErrors({});
+      }
+
       await register({
         variables: {
           email: values.email,
@@ -65,7 +91,6 @@ export default function Register() {
           role: values.role === true ? "SUBSCRIBED" : "NORMAL",
         },
       });
-      toast.success("User created successfully");
     } catch (error) {
       toast.error("Failed to create user");
     }
@@ -81,6 +106,7 @@ export default function Register() {
                 Create and account
               </h1>
               <form
+                noValidate
                 className="space-y-4 md:space-y-6"
                 action="#"
                 onSubmit={handleSubmit}
@@ -102,6 +128,11 @@ export default function Register() {
                     value={values.email}
                     onChange={onChange}
                   />
+                  {errors.email && (
+                    <p className="text-red-500 text-xs italic">
+                      {errors.email}
+                    </p>
+                  )}
                 </div>
                 <div>
                   <label
@@ -120,7 +151,13 @@ export default function Register() {
                     value={values.password}
                     onChange={onChange}
                   />
+                  {errors.password && (
+                    <p className="text-red-500 text-xs italic">
+                      {errors.password}
+                    </p>
+                  )}
                 </div>
+
                 <div>
                   <label
                     htmlFor="confirmPassword"

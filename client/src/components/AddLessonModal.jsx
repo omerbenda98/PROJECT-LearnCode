@@ -7,7 +7,7 @@ export default function AddLessonModal({
   onSaveLessonState,
   currentStep,
   onCancel,
-  lessonContentData,
+  lessonErrors,
 }) {
   const [lessonTitle, setLessonTitle] = useState("");
   const [introduction, setIntroduction] = useState("");
@@ -53,6 +53,11 @@ export default function AddLessonModal({
                 placeholder="Lesson Title"
               />
             )}
+            {lessonErrors.title && (
+              <p className="text-red-500 text-xs italic">
+                {lessonErrors.title}
+              </p>
+            )}
             {currentStep === 2 && (
               <textarea
                 className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -61,6 +66,11 @@ export default function AddLessonModal({
                 placeholder="Introduction Content"
                 rows="3"
               ></textarea>
+            )}
+            {lessonErrors.introduction && (
+              <p className="text-red-500 text-xs italic">
+                {lessonErrors.introduction}
+              </p>
             )}
             {currentStep === 3 && (
               <textarea
@@ -71,6 +81,11 @@ export default function AddLessonModal({
                 rows="3"
               ></textarea>
             )}
+            {lessonErrors.theory && (
+              <p className="text-red-500 text-xs italic">
+                {lessonErrors.theory}
+              </p>
+            )}
             {currentStep === 4 && (
               <textarea
                 className="w-full h-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -80,6 +95,11 @@ export default function AddLessonModal({
                 rows="3"
               ></textarea>
             )}
+            {lessonErrors.example && (
+              <p className="text-red-500 text-xs italic">
+                {lessonErrors.example}
+              </p>
+            )}
             {currentStep === 5 && (
               <textarea
                 className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -88,6 +108,11 @@ export default function AddLessonModal({
                 placeholder="Summary Content"
                 rows="3"
               ></textarea>
+            )}
+            {lessonErrors.summary && (
+              <p className="text-red-500 text-xs italic">
+                {lessonErrors.summary}
+              </p>
             )}
 
             {/* Repeat for Theory, Example, Summary with similar structure */}

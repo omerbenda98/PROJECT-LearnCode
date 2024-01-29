@@ -39,28 +39,13 @@ const SideNav = () => {
     navigate("/register");
   };
   const handleCoursesClick = () => {
-    console.log("gere");
     navigate("/coursesPage");
   };
 
   return (
     <nav className="h-[500px] w-100 h-25 sticky top-0 z-10 bg-slate-950 p-4 flex justify-between items-center">
-      <div className="flex flex-row gap-2">
-        <NavItem selected={selected === 0} id={0} setSelected={setSelected}>
-          <SiTailwindcss className="bright-icon" />
-        </NavItem>
-        <NavItem selected={selected === 1} id={1} setSelected={setSelected}>
-          <SiReact className="bright-icon" />
-        </NavItem>
-        <NavItem selected={selected === 2} id={2} setSelected={setSelected}>
-          <RiJavascriptLine className="bright-icon" />
-        </NavItem>
-        <NavItem selected={selected === 3} id={3} setSelected={setSelected}>
-          <SiFramer className="bright-icon" />
-        </NavItem>
-        <NavItem selected={selected === 4} id={4} setSelected={setSelected}>
-          <SiCss3 className="bright-icon" />
-        </NavItem>
+      <div className="flex flex-row gap-2 text-white">
+        <Link to="/">Home</Link>
       </div>
       <div className="flex flex-row gap-2">
         {user ? (
@@ -68,10 +53,9 @@ const SideNav = () => {
             {user.role === "ADMIN" && (
               <>
                 <AddCourseModal />
-                <EncryptedButton text="COURSES" onClick={handleCoursesClick} />
               </>
             )}
-            {user.role === "SUBSCRIBED" && (
+            {(user.role === "SUBSCRIBED" || user.role === "ADMIN") && (
               <EncryptedButton text="COURSES" onClick={handleCoursesClick} />
             )}
             <EncryptedButton text="LOGOUT" onClick={handleLogoutClick} />
