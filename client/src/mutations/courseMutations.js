@@ -44,7 +44,7 @@ const UPDATE_COURSE = gql`
       title
       description
       difficulty
-      topi
+      topic
       lessons
     }
   }

@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import CrudDropdown from "./CrudDropdown";
+import { Link } from "react-router-dom";
 
 const SquishyCard = (course) => {
   return (
@@ -12,6 +13,7 @@ const SquishyCard = (course) => {
 };
 
 const Card = (course) => {
+  console.log(course.course.id);
   return (
     <motion.div
       whileHover="hover"
@@ -44,9 +46,12 @@ const Card = (course) => {
         </span>
       </div>
 
-      <button className="absolute bottom-4 left-4 right-4 z-0 rounded border-2 border-white bg-black py-2 text-center font-mono font-black uppercase text-neutral-300 backdrop-blur transition-colors hover:bg-white/30 hover:text-white">
+      <Link
+        to={`courses/${course.course.id}`}
+        className="absolute bottom-4 left-4 right-4 z-0 rounded border-2 border-white bg-black py-2 text-center font-mono font-black uppercase text-neutral-300 backdrop-blur transition-colors hover:bg-white/30 hover:text-white"
+      >
         Get Course Now
-      </button>
+      </Link>
 
       <Background courseData={course.course} />
       <CrudDropdown courseId={course.course.id} />

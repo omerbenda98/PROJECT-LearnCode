@@ -39,7 +39,7 @@ const CrudDropdown = (courseId) => {
           style={{ originY: "top", translateX: "-50%" }}
           className="flex flex-col gap-2 p-2 rounded-lg bg-white shadow-xl absolute top-[120%] left-[50%] w-48 overflow-hidden z-10"
         >
-          <Link to={`courses/${courseId.courseId}`}>
+          <Link to={`editCourse/${courseId.courseId}`}>
             {" "}
             <Option setOpen={setOpen} Icon={FiEdit} text="Edit" />
           </Link>

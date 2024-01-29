@@ -18,6 +18,7 @@ import { AuthProvider } from "./context/authContext";
 import CoursesPage from "./pages/CoursesPage";
 import ProtectedRoute from "./components/ProtectedRoute";
 import UnauthorizedComponent from "./components/UnauthorizedComponent";
+import EditCourse from "./pages/EditCourse";
 
 function App() {
   return (
@@ -43,6 +44,14 @@ function App() {
                   element={
                     <ProtectedRoute allowedRoles={["ADMIN", "SUBSCRIBED"]}>
                       <CoursesPage />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/editCourse/:id"
+                  element={
+                    <ProtectedRoute allowedRoles={["ADMIN"]}>
+                      <EditCourse />
                     </ProtectedRoute>
                   }
                 />

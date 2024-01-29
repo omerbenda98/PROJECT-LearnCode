@@ -72,7 +72,7 @@ export default function Course() {
           <Outlet />
         </div>
       </div>
-      {user.role === "ADMIN" && <EditCourseForm course={courseData.course} />}
+
       {user.role === "ADMIN" && <DeleteCourseButton courseId={courseId} />}
     </div>
   );

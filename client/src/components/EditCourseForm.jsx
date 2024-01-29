@@ -3,6 +3,8 @@ import { useMutation, useQuery } from "@apollo/client";
 import { GET_COURSES } from "../queries/courseQueries";
 import { GET_LESSONS_BY_COURSE } from "../queries/lessonsQueries";
 import { UPDATE_COURSE } from "../mutations/courseMutations";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 export default function EditCourseForm({ course }) {
   const [title, setTitle] = useState(course.title);
@@ -10,7 +12,7 @@ export default function EditCourseForm({ course }) {
   const [difficulty, setDifficulty] = useState(course.difficulty);
   const [topic, setTopic] = useState(course.topic);
   const [lessons, setLessons] = useState(course.lessons);
-
+  const navigate = useNavigate();
   const {
     loading: lessonsLoading,
     error: lessonsError,
@@ -45,12 +47,12 @@ export default function EditCourseForm({ course }) {
         description,
         difficulty,
         topic,
-        // lessons,
       },
     })
       .then(() => {
         // Handle success (optional)
-        console.log("Course updated successfully");
+        toast.success("Course Updated");
+        navigate("/");
       })
       .catch((error) => {
         // Handle error (optional)
@@ -85,7 +87,7 @@ export default function EditCourseForm({ course }) {
           ></textarea>
         </div>
         <div className="mb-3">
-          <label className="text-gray-700 font-medium">Difficulty</label>
+          <label className="text-gray-700 font-medium pr-3">Difficulty</label>
           <select
             id="difficulty"
             className="border border-gray-300 rounded px-4 py-2 focus:outline-none focus:border-blue-500"
@@ -98,16 +100,20 @@ export default function EditCourseForm({ course }) {
           </select>
         </div>
         <div className="mb-3">
-          <label className="text-gray-700 font-medium">
-            Topics (comma-separated)
-          </label>
-          <input
-            type="text"
-            className="form-control"
+          <label className="text-gray-700 font-medium">Topic</label>
+          <select
             id="topic"
+            className="w-full border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
             value={topic}
             onChange={(e) => setTopic(e.target.value)}
-          />
+          >
+            <option value="HTML">HTML</option>
+            <option value="CSS">CSS</option>
+            <option value="JavaScript">JavaScript</option>
+            <option value="SQL">SQL</option>
+            <option value="React">React</option>
+            <option value="Node.js">Node.js</option>
+          </select>
         </div>
         <h4>Lessons</h4>
         <ul>
