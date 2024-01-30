@@ -93,7 +93,6 @@ export default function AddCourseModal() {
     const transformedJoiErrors = transformJoiErrors(lessonValidationError);
     if (transformedJoiErrors) {
       setLessonErrors(transformedJoiErrors);
-      console.log(transformedJoiErrors);
       return [];
     } else {
       setLessonErrors({});
@@ -138,11 +137,15 @@ export default function AddCourseModal() {
         lessons: lessonId,
       };
       const { error: courseValidationError } = validateCourseSchema(courseData);
-      const transformedJoiErrors = transformJoiErrors(courseValidationError);
-      if (transformedJoiErrors) {
-        setCourseErrors(transformedJoiErrors);
-        console.log(transformedJoiErrors);
-        return [];
+
+      if (courseValidationError) {
+        // Check if courseValidationError is not null
+        const transformedJoiErrors = transformJoiErrors(courseValidationError);
+
+        if (transformedJoiErrors) {
+          setCourseErrors(transformedJoiErrors);
+          return [];
+        }
       } else {
         setCourseErrors({});
       }
@@ -160,6 +163,7 @@ export default function AddCourseModal() {
       console.error("Error adding course:", error);
     }
   };
+
   const addQuiz = (quiz) => {
     setQuiz(quiz);
   };
@@ -263,7 +267,7 @@ export default function AddCourseModal() {
                     <option value="JavaScript">JavaScript</option>
                     <option value="SQL">SQL</option>
                     <option value="React">React</option>
-                    <option value="Node.js">Node.js</option>
+                    <option value="NodeJS">Node.js</option>
                   </select>
                   {courseErrors.topic && (
                     <p className="text-red-500 text-xs italic">

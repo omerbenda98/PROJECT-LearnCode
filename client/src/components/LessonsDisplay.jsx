@@ -2,10 +2,10 @@
 import React, { useState } from "react";
 import { useQuery } from "@apollo/client";
 import { GET_LESSONS } from "../queries/lessonsQueries";
-import FreeLesson from "./FreeLessonCard";
+import FreeLesson from "./LessonCard";
 import Spinner from "./Spinner";
 
-export default function FreeLessons() {
+export default function LessonsDisplay() {
   const { loading, error, data } = useQuery(GET_LESSONS);
   const [showFreeLessons, setShowFreeLessons] = useState(true);
 

@@ -13,7 +13,16 @@ const SquishyCard = (course) => {
 };
 
 const Card = (course) => {
-  console.log(course.course.id);
+  const topicColorMap = {
+    JavaScript: "bg-yellow-500",
+    HTML: "bg-red-500",
+    CSS: "bg-blue-500",
+    SQL: "bg-indigo-500",
+    React: "bg-gray-500",
+    NodeJS: "bg-emerald-500",
+  };
+
+  const cardColor = topicColorMap[course.course.topic] || "bg-indigo-900"; // Default color
   return (
     <motion.div
       whileHover="hover"
@@ -26,7 +35,8 @@ const Card = (course) => {
           scale: 1.05,
         },
       }}
-      className="relative h-96 w-96 shrink-0 overflow-hidden rounded-xl bg-indigo-900 p-8"
+      // Change background color based on the course topic
+      className={`relative h-96 w-96 shrink-0 overflow-hidden rounded-xl p-8 ${cardColor}`}
     >
       <div className="relative z-0 text-white">
         <span className="mb-3 block w-fit rounded-full bg-white/30 px-3 py-0.7 text-lg font-light text-white">
@@ -52,9 +62,8 @@ const Card = (course) => {
       >
         Get Course Now
       </Link>
-
-      <Background courseData={course.course} />
       <CrudDropdown courseId={course.course.id} />
+      <Background courseData={course.course} />
     </motion.div>
   );
 };

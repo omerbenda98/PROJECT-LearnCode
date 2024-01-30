@@ -18,18 +18,18 @@ const DELETE_USER = gql`
 `;
 
 const UPDATE_USER = gql`
-  mutation UpdateUser(
-    $id: ID!
-    $email: String
-    $password: String
-    $role: Role
-  ) {
-    updateUser(id: $id, email: $email, password: $password, role: $role) {
+  mutation UpdateUser($id: ID!, $role: Role) {
+    updateUser(id: $id, role: $role) {
       id
-      email
       role
     }
   }
 `;
 
-export { ADD_USER, DELETE_USER, UPDATE_USER };
+const REFRESH_TOKEN_MUTATION = gql`
+  mutation RefreshToken($token: String!) {
+    refreshToken(token: $token)
+  }
+`;
+
+export { ADD_USER, DELETE_USER, UPDATE_USER, REFRESH_TOKEN_MUTATION };

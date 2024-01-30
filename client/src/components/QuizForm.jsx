@@ -45,9 +45,20 @@ export default function QuizForm({
 
   const handleSaveQuiz = (e) => {
     e.preventDefault();
-    if (onAddQuiz) {
-      onAddQuiz(questions);
+
+    // Filter out empty questions
+    const filledQuestions = questions.filter(
+      (question) =>
+        question.text.trim() !== "" &&
+        question.options.every((option) => option.trim() !== "")
+    );
+
+    // You might also want to check if there are any questions to save
+    if (filledQuestions.length > 0 && onAddQuiz) {
+      onAddQuiz(filledQuestions);
       setQuizSaved(true);
+    } else {
+      alert("Please add at least one complete question before saving.");
     }
   };
   const handleLessonPrev = () => {

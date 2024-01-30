@@ -37,7 +37,6 @@ function Lesson() {
       setCurrentSectionIndex(currentSectionIndex - 1);
     }
   };
-  console.log(contentSections[currentSectionIndex]);
   return (
     <div className="container mt-4 border h-100">
       <h1 className="display-4">{title}</h1>

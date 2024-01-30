@@ -56,14 +56,8 @@ export default function Login() {
         setErrors({});
       }
       await loginUser();
-    } catch (error) {
-      // Error handling is already managed by onError in useMutation
-    }
+    } catch (error) {}
   };
-
-  // useEffect(() => {
-  //   console.log(errors);
-  // }, [errors]);
 
   return (
     <>

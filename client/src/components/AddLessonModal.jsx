@@ -24,10 +24,10 @@ export default function AddLessonModal({
     const lesson = {
       title: lessonTitle,
       contentSections: [
-        { type: "INTRODUCTION", data: introduction },
-        { type: "THEORY", data: theory },
-        { type: "EXAMPLE", data: example },
-        { type: "SUMMARY", data: summary },
+        { type: "introduction", data: introduction },
+        { type: "theory", data: theory },
+        { type: "example", data: example },
+        { type: "summary", data: summary },
       ],
       isFree: isLessonFree,
     };
