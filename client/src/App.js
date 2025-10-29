@@ -28,7 +28,7 @@ function App() {
         <ApolloProvider client={client}>
           <Router>
             <Navbar />
-            <ParticleRing />
+            <ParticleRing basename="/PROJECT-LearnCode" />
             <div className="container">
               <Routes>
                 <Route path="/" element={<Home />} />

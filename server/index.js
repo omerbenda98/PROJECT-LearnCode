@@ -11,7 +11,17 @@ const app = express();
 
 connectDB();
 
-app.use(cors());
+// CORS configuration
+const corsOptions = {
+  origin: process.env.NODE_ENV === 'production'
+    ? ['https://omerbiton0.github.io', 'https://project-learncode.onrender.com']
+    : 'http://localhost:3000',
+  credentials: true,
+};
+
+app.use(cors(corsOptions));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 app.get("/", (req, res) => {
   res.json({

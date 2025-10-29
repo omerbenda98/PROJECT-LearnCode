@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//c/Users/omerb/OneDrive/Desktop/projects/course-project/PROJECT-LearnCode/server/**)",
+      "Bash(cat:*)",
+      "Read(//c/Users/omerb/OneDrive/Desktop/projects/course-project/PROJECT-LearnCode/**)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
