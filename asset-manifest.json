@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/PROJECT-LearnCode/static/css/main.7603086e.css",
-    "main.js": "/PROJECT-LearnCode/static/js/main.64d4e228.js",
+    "main.js": "/PROJECT-LearnCode/static/js/main.c1cb97b6.js",
     "static/js/787.d5fa4d18.chunk.js": "/PROJECT-LearnCode/static/js/787.d5fa4d18.chunk.js",
     "static/media/imageOne.avif": "/PROJECT-LearnCode/static/media/imageOne.32c87df5377abe8084de.avif",
     "static/media/imageTwo.avif": "/PROJECT-LearnCode/static/media/imageTwo.b323e3344585d4ae08e5.avif",
@@ -10,11 +10,11 @@
     "static/media/imageFour.avif": "/PROJECT-LearnCode/static/media/imageFour.59d21f771c4115e26907.avif",
     "index.html": "/PROJECT-LearnCode/index.html",
     "main.7603086e.css.map": "/PROJECT-LearnCode/static/css/main.7603086e.css.map",
-    "main.64d4e228.js.map": "/PROJECT-LearnCode/static/js/main.64d4e228.js.map",
+    "main.c1cb97b6.js.map": "/PROJECT-LearnCode/static/js/main.c1cb97b6.js.map",
     "787.d5fa4d18.chunk.js.map": "/PROJECT-LearnCode/static/js/787.d5fa4d18.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.7603086e.css",
-    "static/js/main.64d4e228.js"
+    "static/js/main.c1cb97b6.js"
   ]
 }
