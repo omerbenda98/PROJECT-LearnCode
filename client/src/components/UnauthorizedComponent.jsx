@@ -2,8 +2,6 @@ import { jwtDecode } from "jwt-decode";
 import React from "react";
 
 const UnauthorizedComponent = () => {
-  const token = localStorage.getItem("token");
-  const { role } = token ? jwtDecode(token) : null;
   return (
     <div className="flex flex-col items-center justify-center h-screen bg-gray-100">
       <div className="text-center">

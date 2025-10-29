@@ -79,10 +79,10 @@ const SideNav = () => {
           {" "}
           <IoHomeOutline size={35} />
         </Link>
-        {user && user.role === "NORMAL" && (
+        {user?.role === "NORMAL" && (
           <EncryptedButton text="SUBSCRIBE" onClick={handleSubscribeClick} />
         )}
-        {user && user.role === "SUBSCRIBED" && (
+        {user?.role === "SUBSCRIBED" && (
           <EncryptedButton text="UNSUBSCRIBE" onClick={handleSubscribeClick} />
         )}
       </div>

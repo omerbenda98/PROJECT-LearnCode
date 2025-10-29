@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import CrudDropdown from "./CrudDropdown";
 import { Link } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
 
 const SquishyCard = (course) => {
   return (
@@ -13,13 +14,15 @@ const SquishyCard = (course) => {
 };
 
 const Card = (course) => {
+  const token = localStorage.getItem("token");
+  const user = token ? jwtDecode(token) : null;
   const topicColorMap = {
-    JavaScript: "bg-yellow-500",
-    HTML: "bg-red-500",
-    CSS: "bg-blue-500",
-    SQL: "bg-indigo-500",
+    JavaScript: "bg-yellow-700",
+    HTML: "bg-red-900",
+    CSS: "bg-blue-700",
+    SQL: "bg-indigo-400",
     React: "bg-gray-500",
-    NodeJS: "bg-emerald-500",
+    NodeJS: "bg-emerald-600",
   };
 
   const cardColor = topicColorMap[course.course.topic] || "bg-indigo-900"; // Default color
@@ -39,7 +42,7 @@ const Card = (course) => {
       className={`relative h-96 w-96 shrink-0 overflow-hidden rounded-xl p-8 ${cardColor}`}
     >
       <div className="relative z-0 text-white">
-        <span className="mb-3 block w-fit rounded-full bg-white/30 px-3 py-0.7 text-lg font-light text-white">
+        <span className="mb-3 block w-fit rounded-full bg-black/60 px-3 py-0.7 text-lg font-light text-white">
           {course.course.title}
         </span>
 
@@ -62,7 +65,8 @@ const Card = (course) => {
       >
         Get Course Now
       </Link>
-      <CrudDropdown courseId={course.course.id} />
+      {user?.role === "ADMIN" && <CrudDropdown courseId={course.course.id} />}
+
       <Background courseData={course.course} />
     </motion.div>
   );

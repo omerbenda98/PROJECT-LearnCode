@@ -13,6 +13,13 @@ connectDB();
 
 app.use(cors());
 
+app.get("/", (req, res) => {
+  res.json({
+    message: "LearnCode API is running!",
+    graphql: "/graphql",
+  });
+});
+
 app.use(
   "/graphql",
   graphqlHTTP({
